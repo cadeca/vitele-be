@@ -9,12 +9,8 @@ import ro.cadeca.vitele.services.SubjectService
 class SubjectController(private val subjectService: SubjectService) {
 
     @GetMapping("all")
-    fun findAll(): List<Subject> {
-        return subjectService.findAll()
-    }
+    fun findAll(): List<Subject> = subjectService.findAll()
 
     @PutMapping
-    fun create(@RequestBody subject: Subject) {
-        subjectService.createSubject(subject)
-    }
+    fun create(@RequestBody subject: Subject) = subjectService.createSubject(subject)
 }

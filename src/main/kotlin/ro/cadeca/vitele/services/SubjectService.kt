@@ -11,10 +11,10 @@ class SubjectService(private val subjectRepository: SubjectRepository,
                      private val subjectEntityToModelConverter: SubjectEntityToModelConverter,
                      private val subjectModelToEntityConverter: SubjectModelToEntityConverter) {
 
-    fun createSubject(subject: Subject) {
-        subject.let(subjectModelToEntityConverter::convert)
-                .let(subjectRepository::save)
-    }
+    fun createSubject(subject: Subject) =
+            subject.let(subjectModelToEntityConverter::convert)
+                    .let(subjectRepository::save)
 
-    fun findAll(): List<Subject> = subjectRepository.findAll().map(subjectEntityToModelConverter::convert)
+    fun findAll(): List<Subject> =
+            subjectRepository.findAll().map(subjectEntityToModelConverter::convert)
 }

@@ -6,3 +6,6 @@ spring:
     active: dev
   banner:
     location: banner.txt
+  jpa:
+    hibernate:
+      ddl-auto: update
