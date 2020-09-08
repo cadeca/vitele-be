@@ -1,4 +1,4 @@
-package ro.cadeca.vitele.config
+package ro.cadeca.weasylearn.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

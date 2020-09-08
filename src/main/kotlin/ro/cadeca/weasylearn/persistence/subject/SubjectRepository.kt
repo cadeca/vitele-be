@@ -1,4 +1,4 @@
-package ro.cadeca.vitele.persistence.subject
+package ro.cadeca.weasylearn.persistence.subject
 
 import org.springframework.data.repository.CrudRepository
 
