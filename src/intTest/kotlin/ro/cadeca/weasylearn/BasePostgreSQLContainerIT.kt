@@ -9,12 +9,11 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 import org.testcontainers.containers.PostgreSQLContainer
-import ro.cadeca.vitele.ViteleBeApplication
 
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(classes = [ViteleBeApplication::class], initializers = [BasePostgreSQLContainerIT.Initializer::class])
+@ContextConfiguration(classes = [WeasylearnBeApplication::class], initializers = [BasePostgreSQLContainerIT.Initializer::class])
 @ActiveProfiles(profiles = ["prod"])
 abstract class BasePostgreSQLContainerIT {
 	companion object {

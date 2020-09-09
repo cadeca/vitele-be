@@ -8,7 +8,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.exchange
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpMethod
-import ro.cadeca.vitele.model.Subject
+import ro.cadeca.weasylearn.model.Subject
 
 
 class AddAndGetSubjectIT : BasePostgreSQLContainerIT() {
