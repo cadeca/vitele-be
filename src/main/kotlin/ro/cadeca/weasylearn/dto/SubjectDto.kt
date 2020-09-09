@@ -1,4 +1,4 @@
-package ro.cadeca.vitele.dto
+package ro.cadeca.weasylearn.dto
 
 class SubjectDto(
         var name: String?,

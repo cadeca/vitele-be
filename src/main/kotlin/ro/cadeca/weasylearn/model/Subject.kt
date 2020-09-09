@@ -1,4 +1,4 @@
-package ro.cadeca.vitele.model
+package ro.cadeca.weasylearn.model
 
 class Subject(
         var name: String,

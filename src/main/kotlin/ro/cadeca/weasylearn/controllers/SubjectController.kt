@@ -1,8 +1,8 @@
-package ro.cadeca.vitele.controllers
+package ro.cadeca.weasylearn.controllers
 
 import org.springframework.web.bind.annotation.*
-import ro.cadeca.vitele.model.Subject
-import ro.cadeca.vitele.services.SubjectService
+import ro.cadeca.weasylearn.model.Subject
+import ro.cadeca.weasylearn.services.SubjectService
 
 @RestController
 @RequestMapping("api/subject")

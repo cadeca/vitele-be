@@ -1,11 +1,11 @@
-package ro.cadeca.vitele
+package ro.cadeca.weasylearn
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class ViteleBeApplication
+class WeasylearnBeApplication
 
 fun main(args: Array<String>) {
-	runApplication<ViteleBeApplication>(*args)
+	runApplication<WeasylearnBeApplication>(*args)
 }
