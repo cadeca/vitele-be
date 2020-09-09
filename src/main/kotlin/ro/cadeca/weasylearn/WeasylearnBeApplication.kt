@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class WLBeApplication
+class WeasylearnBeApplication
 
 fun main(args: Array<String>) {
-	runApplication<WLBeApplication>(*args)
+	runApplication<WeasylearnBeApplication>(*args)
 }

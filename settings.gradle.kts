@@ -1,1 +1,1 @@
-rootProject.name = "Weasylearn-be"
+rootProject.name = "weasylearn-be"
