@@ -1,10 +1,10 @@
-package ro.cadeca.vitele.services
+package ro.cadeca.weasylearn.services
 
 import org.springframework.stereotype.Service
-import ro.cadeca.vitele.converters.subject.SubjectEntityToModelConverter
-import ro.cadeca.vitele.converters.subject.SubjectModelToEntityConverter
-import ro.cadeca.vitele.model.Subject
-import ro.cadeca.vitele.persistence.subject.SubjectRepository
+import ro.cadeca.weasylearn.converters.subject.SubjectEntityToModelConverter
+import ro.cadeca.weasylearn.converters.subject.SubjectModelToEntityConverter
+import ro.cadeca.weasylearn.model.Subject
+import ro.cadeca.weasylearn.persistence.subject.SubjectRepository
 
 @Service
 class SubjectService(private val subjectRepository: SubjectRepository,

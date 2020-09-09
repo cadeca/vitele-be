@@ -1,4 +1,4 @@
-package ro.cadeca.vitele.annotations
+package ro.cadeca.weasylearn.annotations
 
 import org.springframework.stereotype.Component
 

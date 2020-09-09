@@ -1,6 +1,6 @@
-package ro.cadeca.vitele.persistence.subject
+package ro.cadeca.weasylearn.persistence.subject
 
-import ro.cadeca.vitele.persistence.BaseEntity
+import ro.cadeca.weasylearn.persistence.BaseEntity
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Inheritance
