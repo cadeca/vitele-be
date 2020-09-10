@@ -1,6 +1,5 @@
 name: Build
 
-# Run mvn clean install on pull requests
 on:
   push:
     branches:
