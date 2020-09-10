@@ -1,21 +1,23 @@
-name: Assemble
+name: Integration Test
 
 on:
   push:
     branches:
-      - develop
+      - master
+      - 'release/**'
   pull_request:
     branches:
-      - develop
+      - master
+      - 'release/**'
 
 jobs:
-  assemble:
+  integrationTest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Java for build
+      - name: Set up Java
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Assemble
-        run: gradle assemble
+      - name: Integration Test
+        run: gradle build

@@ -3,21 +3,19 @@ name: Build
 on:
   push:
     branches:
-      - master
-      - 'release/**'
+      - develop
   pull_request:
     branches:
-      - master
-      - 'release/**'
+      - develop
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Java for build
+      - name: Set up Java
         uses: actions/setup-java@v1
         with:
           java-version: 11
       - name: Build
-        run: gradle build
+        run: gradle build -x integrationTest
