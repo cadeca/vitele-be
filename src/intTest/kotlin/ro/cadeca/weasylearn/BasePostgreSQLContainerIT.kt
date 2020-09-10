@@ -14,7 +14,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = [WeasylearnBeApplication::class], initializers = [BasePostgreSQLContainerIT.Initializer::class])
-@ActiveProfiles(profiles = ["prod"])
+@ActiveProfiles(profiles = ["intTest"])
 abstract class BasePostgreSQLContainerIT {
 	companion object {
 		val postgres = PostgreSQLContainer<Nothing>().apply {
