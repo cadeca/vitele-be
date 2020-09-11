@@ -2,10 +2,9 @@ name: Build
 
 on:
   push:
-    branches:
-      - develop
-  pull_request:
-    branches:
+    branches-ignore:
+      - master
+      - 'release/**'
       - develop
 
 jobs:
