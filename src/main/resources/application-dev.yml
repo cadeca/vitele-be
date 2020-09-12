@@ -13,7 +13,7 @@ keycloak:
   auth-server-url: http://localhost:9999/auth
   realm: weasylearn
   resource: weasylearn-be
-  bearer-only : true
+  bearer-only: true
   principal-attribute: preferred_username
   ssl-required: external
   use-resource-role-mappings: true

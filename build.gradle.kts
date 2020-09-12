@@ -17,22 +17,22 @@ repositories {
 }
 
 sourceSets {
-	create("intTest") {
-		withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
-			kotlin.srcDir("src/intTest/kotlin")
-			resources.srcDir("src/intTest/resources")
-			compileClasspath += sourceSets["main"].output + configurations["testRuntimeClasspath"]
-			runtimeClasspath += output + compileClasspath + sourceSets["test"].runtimeClasspath
-		}
-	}
+    create("intTest") {
+        withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
+            kotlin.srcDir("src/intTest/kotlin")
+            resources.srcDir("src/intTest/resources")
+            compileClasspath += sourceSets["main"].output + configurations["testRuntimeClasspath"]
+            runtimeClasspath += output + compileClasspath + sourceSets["test"].runtimeClasspath
+        }
+    }
 }
 
 val intTestImplementation by configurations.getting {
-	extendsFrom(configurations.implementation.get())
+    extendsFrom(configurations.implementation.get())
 }
 
 val intTestRuntimeOnly by configurations.getting {
-	extendsFrom(configurations.runtimeOnly.get())
+    extendsFrom(configurations.runtimeOnly.get())
 }
 
 configurations["intTestRuntimeOnly"].extendsFrom(configurations.runtimeOnly.get())
@@ -40,38 +40,39 @@ configurations["intTestRuntimeOnly"].extendsFrom(configurations.runtimeOnly.get(
 extra["testcontainersVersion"] = "1.14.3"
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-mail")
-	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.keycloak:keycloak-spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.keycloak:keycloak-spring-boot-starter")
 
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-	runtimeOnly("com.h2database:h2")
-	runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.postgresql:postgresql")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test") {
-		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-	}
-	testImplementation("org.springframework.security:spring-security-test")
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
 
 
-	intTestImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
-	intTestImplementation("org.springframework.boot:spring-boot-starter-test") {
-		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-	}
-	intTestImplementation("org.testcontainers:junit-jupiter")
-	intTestImplementation("org.testcontainers:postgresql")
-	intTestImplementation("org.testcontainers:testcontainers")
+    intTestImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
+    intTestImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
+    intTestImplementation("org.testcontainers:junit-jupiter")
+    intTestImplementation("org.testcontainers:postgresql")
+    intTestImplementation("org.testcontainers:testcontainers")
+    intTestImplementation("com.c4-soft.springaddons:spring-security-oauth2-test-webmvc-addons:2.3.4")
 
-	intTestRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+    intTestRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
 }
 
 dependencyManagement {
@@ -94,12 +95,12 @@ tasks.withType<KotlinCompile> {
 
 
 val integrationTest = task<Test>("integrationTest") {
-	description = "Runs integration tests."
-	group = "verification"
-	testClassesDirs = sourceSets["intTest"].output.classesDirs
-	classpath = sourceSets["intTest"].runtimeClasspath
-	shouldRunAfter("test")
-	useJUnitPlatform()
+    description = "Runs integration tests."
+    group = "verification"
+    testClassesDirs = sourceSets["intTest"].output.classesDirs
+    classpath = sourceSets["intTest"].runtimeClasspath
+    shouldRunAfter("test")
+    useJUnitPlatform()
 }
 
 tasks.check { dependsOn(integrationTest) }

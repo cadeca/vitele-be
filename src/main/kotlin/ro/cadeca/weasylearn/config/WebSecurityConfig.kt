@@ -35,10 +35,15 @@ class WebSecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
     @Autowired
     fun configureGlobal(auth: AuthenticationManagerBuilder?) {
         super.configure(auth)
-        val keycloakAuthenticationProvider = keycloakAuthenticationProvider()
-        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(SimpleAuthorityMapper())
-        auth!!.authenticationProvider(keycloakAuthenticationProvider)
+        auth!!.authenticationProvider(
+                keycloakAuthenticationProvider().apply {
+                    setGrantedAuthoritiesMapper(simpleAuthorityMapper())
+                }
+        )
     }
+
+    @Bean
+    fun simpleAuthorityMapper() = SimpleAuthorityMapper()
 
     @Bean
     @Override
