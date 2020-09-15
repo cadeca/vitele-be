@@ -5,3 +5,13 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# This is here because keycloak searches for it. Otherwise not needed for IT
+keycloak:
+  auth-server-url: http://localhost:9999/auth
+  realm: weasylearn
+  resource: weasylearn-be
+  bearer-only: true
+  principal-attribute: preferred_username
+  ssl-required: external
+  use-resource-role-mappings: true
