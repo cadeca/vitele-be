@@ -25,9 +25,10 @@ class AddAndGetUserByFirstNameIT : BasePostgreSQLContainerIT() {
     @WithMockKeycloakAuth(ADMIN, TEACHER)
     fun `i can add an user to the database and then get it from the list of users by his first name`() {
         mockMvc.perform(MockMvcRequestBuilders.put(path).contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(User("Doe", "John", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
-        val usersByFirstName: List<User> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/allByFirstName").param("firstName", "John")).andReturn().response.contentAsString)
+                .content(mapper.writeValueAsString(User("Doe5", "John5", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
+        val usersByFirstName: List<User> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/allByFirstName").param("firstName", "John5")).andReturn().response.contentAsString)
 
-        Assertions.assertEquals("John", usersByFirstName.first().firstName)
+        val user = usersByFirstName.find { it.lastName == "Doe5" } !!
+        Assertions.assertEquals("John5", user.firstName)
     }
 }

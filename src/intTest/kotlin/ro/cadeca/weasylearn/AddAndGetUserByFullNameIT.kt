@@ -25,10 +25,11 @@ class AddAndGetUserByFullNameIT : BasePostgreSQLContainerIT() {
     @WithMockKeycloakAuth(ADMIN, TEACHER)
     fun `i can add an user to the database and then get it from the list of users by his full name`() {
         mockMvc.perform(MockMvcRequestBuilders.put(path).contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(User("Doe", "John", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
-        val usersByFullName: List<User> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/allByFullName").param("lastName", "Doe").param("firstName", "John")).andReturn().response.contentAsString)
+                .content(mapper.writeValueAsString(User("Doe4", "John4", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
+        val usersByFullName: List<User> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/allByFullName").param("lastName", "Doe4").param("firstName", "John4")).andReturn().response.contentAsString)
 
-        Assertions.assertEquals("Doe", usersByFullName.first().lastName)
-        Assertions.assertEquals("John", usersByFullName.first().firstName)
+        val user = usersByFullName.find { it.lastName == "Doe4" } !!
+        Assertions.assertEquals("Doe4", user.lastName)
+        Assertions.assertEquals("John4", user.firstName)
     }
 }

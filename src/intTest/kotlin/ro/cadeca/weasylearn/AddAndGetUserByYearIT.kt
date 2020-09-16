@@ -25,9 +25,10 @@ class AddAndGetUserByYearIT : BasePostgreSQLContainerIT() {
     @WithMockKeycloakAuth(ADMIN, TEACHER)
     fun `i can add an user to the database and then get it from the list of users by the year he is in`() {
         mockMvc.perform(MockMvcRequestBuilders.put(path).contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(User("Doe", "John", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
+                .content(mapper.writeValueAsString(User("Doe1", "John", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
         val usersByYear: List<User> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/allByYear").param("year", "2")).andReturn().response.contentAsString)
 
-        Assertions.assertEquals(2, usersByYear.first().year)
+        val user = usersByYear.find { it.lastName == "Doe1" } !!
+        Assertions.assertEquals(2, user.year)
     }
 }

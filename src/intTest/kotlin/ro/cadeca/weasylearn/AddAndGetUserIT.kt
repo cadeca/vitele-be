@@ -36,13 +36,13 @@ class AddAndGetUserIT : BasePostgreSQLContainerIT() {
                 .content(mapper.writeValueAsString(User("Doe", "John", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
         val users: List<User> = mapper.readValue(mockMvc.perform(get(path)).andReturn().response.contentAsString)
 
-        Assertions.assertEquals(1, users.size)
-        Assertions.assertEquals("Doe", users.first().lastName)
-        Assertions.assertEquals("John", users.first().firstName)
-        Assertions.assertEquals(2, users.first().year)
-        Assertions.assertEquals("1.1", users.first().groupId)
-        Assertions.assertEquals("Politehnica", users.first().university)
-        Assertions.assertEquals("AC", users.first().faculty)
-        Assertions.assertEquals("CTI", users.first().department)
+        val user = users.find { it.lastName == "Doe" } !!
+        Assertions.assertEquals("Doe", user.lastName)
+        Assertions.assertEquals("John", user.firstName)
+        Assertions.assertEquals(2, user.year)
+        Assertions.assertEquals("1.1", user.groupId)
+        Assertions.assertEquals("Politehnica", user.university)
+        Assertions.assertEquals("AC", user.faculty)
+        Assertions.assertEquals("CTI", user.department)
     }
 }

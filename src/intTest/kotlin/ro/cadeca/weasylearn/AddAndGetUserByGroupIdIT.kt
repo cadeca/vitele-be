@@ -25,9 +25,10 @@ class AddAndGetUserByGroupIdIT : BasePostgreSQLContainerIT() {
     @WithMockKeycloakAuth(ADMIN, TEACHER)
     fun `i can add an user to the database and then get it from the list of users by his group`() {
         mockMvc.perform(MockMvcRequestBuilders.put(path).contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(User("Doe", "John", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
+                .content(mapper.writeValueAsString(User("Doe3", "John", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
         val usersByGroup: List<User> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/allByGroupId").param("groupId", "1.1")).andReturn().response.contentAsString)
 
-        Assertions.assertEquals("1.1", usersByGroup.first().groupId)
+        val user = usersByGroup.find { it.lastName == "Doe3" } !!
+        Assertions.assertEquals("1.1", user.groupId)
     }
 }
