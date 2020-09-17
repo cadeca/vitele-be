@@ -27,11 +27,11 @@ sourceSets {
     }
 }
 
-val intTestImplementation by configurations.getting {
+val intTestImplementation: Configuration by configurations.getting {
     extendsFrom(configurations.implementation.get())
 }
 
-val intTestRuntimeOnly by configurations.getting {
+val intTestRuntimeOnly: Configuration by configurations.getting {
     extendsFrom(configurations.runtimeOnly.get())
 }
 
@@ -44,6 +44,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.keycloak:keycloak-spring-boot-starter")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -69,6 +70,7 @@ dependencies {
     }
     intTestImplementation("org.testcontainers:junit-jupiter")
     intTestImplementation("org.testcontainers:postgresql")
+    intTestImplementation("org.testcontainers:mongodb:1.14.3")
     intTestImplementation("org.testcontainers:testcontainers")
     intTestImplementation("com.c4-soft.springaddons:spring-security-oauth2-test-webmvc-addons:2.3.4")
 

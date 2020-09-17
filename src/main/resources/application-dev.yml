@@ -8,6 +8,8 @@ spring:
     username: wasylearner
     password: wasylearner
     driver-class-name: org.h2.Driver
+  autoconfigure:
+    exclude: org.keycloak.adapters.springboot.KeycloakAutoConfiguration
 
 keycloak:
   auth-server-url: http://localhost:9999/auth
