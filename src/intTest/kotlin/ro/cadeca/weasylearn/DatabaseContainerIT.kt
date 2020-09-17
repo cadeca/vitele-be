@@ -26,7 +26,11 @@ abstract class DatabaseContainerIT {
             withPassword("testPass")
         }
 
-        val mongo = MongoDBContainer()
+        const val mongoDbUser = "weasylearner"
+        const val mongoDbPassword = "weasylearner"
+        val mongo = MongoDBContainer().apply {
+//            withClasspathResourceMapping("init-mongo.js", "/docker-entrypoint-initdb.d/init-mongo.js", BindMode.READ_WRITE)
+        }
     }
 
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
@@ -35,9 +39,12 @@ abstract class DatabaseContainerIT {
             mongo.start()
 
             TestPropertyValues.of(
-                    "spring.datasource.url=" + postgres.jdbcUrl,
-                    "spring.datasource.username=" + postgres.username,
-                    "spring.datasource.password=" + postgres.password
+                    "spring.datasource.url=${postgres.jdbcUrl}",
+                    "spring.datasource.username=${postgres.username}",
+                    "spring.datasource.password=${postgres.password}"
+//                    "spring.data.mongodb.uri=${mongo.replicaSetUrl}",
+//                    "spring.data.mongodb.username=$mongoDbUser",
+//                    "spring.data.mongodb.password=$mongoDbPassword"
             ).applyTo(configurableApplicationContext.environment)
         }
     }
