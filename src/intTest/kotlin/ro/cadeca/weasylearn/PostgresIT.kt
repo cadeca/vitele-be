@@ -9,15 +9,16 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
+import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.containers.PostgreSQLContainer
 
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(classes = [WeasylearnBeApplication::class], initializers = [BasePostgreSQLContainerIT.Initializer::class])
+@ContextConfiguration(classes = [WeasylearnBeApplication::class], initializers = [PostgresIT.Initializer::class])
 @ActiveProfiles(profiles = ["intTest"])
 @AutoConfigureMockMvc
-abstract class BasePostgreSQLContainerIT {
+abstract class PostgresIT {
     companion object {
         val postgres = PostgreSQLContainer<Nothing>().apply {
             withDatabaseName("postgres")
@@ -29,10 +30,11 @@ abstract class BasePostgreSQLContainerIT {
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
             postgres.start()
+
             TestPropertyValues.of(
-                    "spring.datasource.url=" + postgres.jdbcUrl,
-                    "spring.datasource.username=" + postgres.username,
-                    "spring.datasource.password=" + postgres.password
+                    "spring.datasource.url=${postgres.jdbcUrl}",
+                    "spring.datasource.username=${postgres.username}",
+                    "spring.datasource.password=${postgres.password}"
             ).applyTo(configurableApplicationContext.environment)
         }
     }

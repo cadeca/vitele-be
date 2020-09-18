@@ -9,9 +9,18 @@ spring:
     password: wasylearner
     driver-class-name: org.h2.Driver
 
+  data:
+    mongodb:
+      host: localhost
+      port: 2025
+      database: weasylearn
+      username: weasylearner
+      password: weasylearner
+      authentication-database: weasylearn
+
 keycloak:
-  auth-server-url: http://localhost:9999/auth
-  realm: weasylearn
+  auth-server-url: https://accounts.weasylearn.ro
+  realm: weasylearn-local
   resource: weasylearn-be
   bearer-only: true
   principal-attribute: preferred_username
