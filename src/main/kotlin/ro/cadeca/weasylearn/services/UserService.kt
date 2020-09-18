@@ -14,12 +14,7 @@ class UserService(private val userRepository: UserRepository,
                   private val keycloakUserToUserDocumentConverter: KeycloakUserToUserDocumentConverter,
                   private val userToUserModelConverter: UserDocumentToUserModelConverter,
                   private val userToStudentModelConverter: UserDocumentToStudentModelConverter,
-                  private val userToTeacherModelConverter: UserDocumentToTeacherModelConverter,
-                  private val userModelToDocumentConverter: UserModelToDocumentConverter) {
-
-    fun createUser(user: User) =
-            user.let(userModelToDocumentConverter::convert)
-                    .let(userRepository::save)
+                  private val userToTeacherModelConverter: UserDocumentToTeacherModelConverter) {
 
     fun findAllStudents() = userRepository.findByType(STUDENT).map(userToStudentModelConverter::convert)
 

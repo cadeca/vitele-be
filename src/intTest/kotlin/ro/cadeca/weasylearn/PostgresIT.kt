@@ -17,7 +17,6 @@ import org.testcontainers.containers.PostgreSQLContainer
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = [WeasylearnBeApplication::class], initializers = [PostgresIT.Initializer::class])
 @ActiveProfiles(profiles = ["intTest"])
-@AutoConfigureMockMvc
 abstract class PostgresIT {
     companion object {
         val postgres = PostgreSQLContainer<Nothing>().apply {

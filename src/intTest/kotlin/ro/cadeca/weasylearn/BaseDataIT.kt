@@ -16,7 +16,6 @@ import org.testcontainers.containers.PostgreSQLContainer
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = [WeasylearnBeApplication::class], initializers = [BaseDataIT.Initializer::class])
 @ActiveProfiles(profiles = ["intTest"])
-@AutoConfigureMockMvc
 abstract class BaseDataIT {
     companion object {
         val mongo = MongoDBContainer()

@@ -32,8 +32,4 @@ class UserController(private val userService: UserService) {
     @GetMapping("profile")
     @RolesAllowed(ADMIN, TEACHER, STUDENT)
     fun gerProfile(): UserProfileDTO = userService.getCurrentUserProfile()
-
-    @PutMapping
-    @RolesAllowed(ADMIN)
-    fun create(@RequestBody user: User) = userService.createUser(user)
 }
