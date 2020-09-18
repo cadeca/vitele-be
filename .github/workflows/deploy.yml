@@ -39,8 +39,9 @@ jobs:
           fi
           if [[ $VERSION == v-* ]]; then
             VERSION=$(echo ${VERSION#v-})
+            TAGS="${DOCKER_IMAGE}:v-${VERSION},${DOCKER_IMAGE}:${VERSION}"
           fi
-          TAGS="${DOCKER_IMAGE}:v-${VERSION},${DOCKER_IMAGE}:${VERSION}"
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
           TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
           if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
             MINOR=${VERSION%.*}
