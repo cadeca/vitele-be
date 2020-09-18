@@ -1,8 +1,9 @@
 package ro.cadeca.weasylearn.model
 
 class Subject(
-        var name: String,
-        var code: String,
-        var description: String,
-        var semester: Int
+        var name: String? = null,
+        var code: String? = null,
+        var description: String? = null,
+        var semester: Int? = null,
+        val id: Long? = null
 )

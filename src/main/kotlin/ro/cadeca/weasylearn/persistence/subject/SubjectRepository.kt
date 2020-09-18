@@ -1,5 +1,5 @@
 package ro.cadeca.weasylearn.persistence.subject
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface SubjectRepository : CrudRepository<SubjectEntity, Long>
+interface SubjectRepository : JpaRepository<SubjectEntity, Long>
