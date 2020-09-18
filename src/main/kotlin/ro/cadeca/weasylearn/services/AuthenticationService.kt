@@ -16,6 +16,6 @@ class AuthenticationService {
     fun getKeycloakUser(): KeycloakUser {
         val authentication = getAuthentication()
         val token = authentication.account.keycloakSecurityContext.token
-        return KeycloakUser(token.preferredUsername, token.name, token.givenName, token.familyName, authentication.authorities.map { it.authority })
+        return KeycloakUser(token.preferredUsername, token.name, token.givenName, token.familyName, token.email, authentication.authorities.map { it.authority })
     }
 }

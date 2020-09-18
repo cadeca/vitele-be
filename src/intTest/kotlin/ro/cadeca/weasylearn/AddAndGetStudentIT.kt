@@ -5,23 +5,18 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.test.web.client.exchange
-import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import ro.cadeca.weasylearn.config.ADMIN
 import ro.cadeca.weasylearn.config.TEACHER
-import ro.cadeca.weasylearn.model.Subject
+import ro.cadeca.weasylearn.model.Student
 import ro.cadeca.weasylearn.model.User
+import java.util.*
 
-class AddAndGetUserIT : BasePostgreSQLContainerIT() {
+class AddAndGetStudentIT : PostgresIT() {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -33,16 +28,20 @@ class AddAndGetUserIT : BasePostgreSQLContainerIT() {
     @WithMockKeycloakAuth(ADMIN, TEACHER)
     fun `i can add an user to the database and then get it from the list of users`() {
         mockMvc.perform(put(path).contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(User("Doe", "John", 2, "1.1", emptyList(), "Politehnica", "AC", "CTI"))))
-        val users: List<User> = mapper.readValue(mockMvc.perform(get(path)).andReturn().response.contentAsString)
+                .content(mapper.writeValueAsString(Student("johnDoe", "John", "Doe", Date(1/1/1990), byteArrayOf(), "john.doe@gmail.com", 2, "1.2", "johnDoeGH", "JohnDoe", "john.doe"))))
+        val students: List<Student> = mapper.readValue(mockMvc.perform(get(path)).andReturn().response.contentAsString)
 
-        val user = users.find { it.lastName == "Doe" } !!
-        Assertions.assertEquals("Doe", user.lastName)
+        val user = students.find { it.lastName == "Doe" } !!
+        Assertions.assertEquals("johnDoe", user.userName)
         Assertions.assertEquals("John", user.firstName)
-        Assertions.assertEquals(2, user.year)
-        Assertions.assertEquals("1.1", user.groupId)
-        Assertions.assertEquals("Politehnica", user.university)
-        Assertions.assertEquals("AC", user.faculty)
-        Assertions.assertEquals("CTI", user.department)
+        Assertions.assertEquals("Doe", user.lastName)
+        Assertions.assertEquals(1/1/1990, user.dateOfBirth)
+        Assertions.assertEquals(byteArrayOf(), user.profilePicture)
+        Assertions.assertEquals("john.doe@gmail.com", user.email)
+        Assertions.assertEquals("2", user.year)
+        Assertions.assertEquals("1.2", user.group)
+        Assertions.assertEquals("johnDoeGH", user.githubUser)
+        Assertions.assertEquals("JohnDoe", user.facebookUser)
+        Assertions.assertEquals("john.doe", user.eduUser)
     }
 }

@@ -2,7 +2,7 @@ package ro.cadeca.weasylearn.dto
 
 import ro.cadeca.weasylearn.persistence.subject.SubjectEntity
 
-class UserDto(
+class StudentDTO(
         var lastName: String? = null,
         var firstName: String? = null,
         var year: Int? = null,

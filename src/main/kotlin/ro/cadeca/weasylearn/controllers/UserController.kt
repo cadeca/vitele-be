@@ -2,7 +2,9 @@ package ro.cadeca.weasylearn.controllers
 
 import org.springframework.web.bind.annotation.*
 import ro.cadeca.weasylearn.config.ADMIN
+import ro.cadeca.weasylearn.config.STUDENT
 import ro.cadeca.weasylearn.config.TEACHER
+import ro.cadeca.weasylearn.dto.UserProfileDTO
 import ro.cadeca.weasylearn.model.User
 import ro.cadeca.weasylearn.services.UserService
 import javax.annotation.security.RolesAllowed
@@ -27,13 +29,9 @@ class UserController(private val userService: UserService) {
     @RolesAllowed(ADMIN, TEACHER)
     fun findAllByFullName(@RequestParam lastName: String, @RequestParam firstName: String): List<User> = userService.findAllByFullName(lastName, firstName)
 
-    @GetMapping("allByYear")
-    @RolesAllowed(ADMIN, TEACHER)
-    fun findAllByYear(@RequestParam year: Int): List<User> = userService.findAllByYear(year)
-
-    @GetMapping("allByGroupId")
-    @RolesAllowed(ADMIN, TEACHER)
-    fun findAllByGroupId(@RequestParam groupId: String): List<User> = userService.findAllByGroupId(groupId)
+    @GetMapping("profile")
+    @RolesAllowed(TEACHER, STUDENT)
+    fun gerProfile(): UserProfileDTO = userService.getCurrentUserProfile()
 
     @PutMapping
     @RolesAllowed(ADMIN)
