@@ -10,12 +10,12 @@ import ro.cadeca.weasylearn.services.UserService
 import javax.annotation.security.RolesAllowed
 
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("api/user")
 class UserController(private val userService: UserService) {
 
     @GetMapping
     @RolesAllowed(ADMIN, TEACHER)
-    fun findAll(): List<User> = userService.findAll()
+    fun findAll(): List<User> = userService.findAllOtherUsers()
 
     @GetMapping("allByLastName")
     @RolesAllowed(ADMIN, TEACHER)
@@ -30,7 +30,7 @@ class UserController(private val userService: UserService) {
     fun findAllByFullName(@RequestParam lastName: String, @RequestParam firstName: String): List<User> = userService.findAllByFullName(lastName, firstName)
 
     @GetMapping("profile")
-    @RolesAllowed(TEACHER, STUDENT)
+    @RolesAllowed(ADMIN, TEACHER, STUDENT)
     fun gerProfile(): UserProfileDTO = userService.getCurrentUserProfile()
 
     @PutMapping

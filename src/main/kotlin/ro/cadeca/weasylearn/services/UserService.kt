@@ -1,37 +1,39 @@
 package ro.cadeca.weasylearn.services
 
 import org.springframework.stereotype.Service
-import ro.cadeca.weasylearn.converters.user.KeycloakUserToUserDocumentConverter
-import ro.cadeca.weasylearn.converters.user.UserDocumentToUserModelConverter
-import ro.cadeca.weasylearn.converters.user.UserDocumentToUserProfileDtoConverter
-import ro.cadeca.weasylearn.converters.user.UserModelToDocumentConverter
+import ro.cadeca.weasylearn.converters.user.*
 import ro.cadeca.weasylearn.dto.UserProfileDTO
 import ro.cadeca.weasylearn.model.KeycloakUser
 import ro.cadeca.weasylearn.model.User
-import ro.cadeca.weasylearn.persistence.user.UserDocument
-import ro.cadeca.weasylearn.persistence.user.UserRepository
+import ro.cadeca.weasylearn.persistence.user.*
 
 @Service
 class UserService(private val userRepository: UserRepository,
                   private val authenticationService: AuthenticationService,
-                  private val userDocumentToUserProfileDtoConverter: UserDocumentToUserProfileDtoConverter,
+                  private val userToUserProfileDtoConverter: UserDocumentToUserProfileDtoConverter,
                   private val keycloakUserToUserDocumentConverter: KeycloakUserToUserDocumentConverter,
-                  private val userDocumentToUserModelConverter: UserDocumentToUserModelConverter,
+                  private val userToUserModelConverter: UserDocumentToUserModelConverter,
+                  private val userToStudentModelConverter: UserDocumentToStudentModelConverter,
+                  private val userToTeacherModelConverter: UserDocumentToTeacherModelConverter,
                   private val userModelToDocumentConverter: UserModelToDocumentConverter) {
 
     fun createUser(user: User) =
             user.let(userModelToDocumentConverter::convert)
                     .let(userRepository::save)
 
-    fun findAll(): List<User> =
-            userRepository.findAll().map(userDocumentToUserModelConverter::convert)
+    fun findAllStudents() = userRepository.findByType(STUDENT).map(userToStudentModelConverter::convert)
+
+    fun findAllTeachers() = userRepository.findByType(TEACHER).map(userToTeacherModelConverter::convert)
+
+    fun findAllOtherUsers(): List<User> =
+            userRepository.findByType(USER).map(userToUserModelConverter::convert)
 
     fun findAllByLastName(lastName: String): List<User> {
         val foundUsersByLastName = arrayListOf<User>()
 
         userRepository.findAll().iterator().forEach {
             if (it.lastName == lastName) {
-                foundUsersByLastName.add(userDocumentToUserModelConverter.convert(it))
+                foundUsersByLastName.add(userToUserModelConverter.convert(it))
             }
         }
 
@@ -43,7 +45,7 @@ class UserService(private val userRepository: UserRepository,
 
         userRepository.findAll().iterator().forEach {
             if (it.firstName == firstName) {
-                foundUsersByFirstName.add(userDocumentToUserModelConverter.convert(it))
+                foundUsersByFirstName.add(userToUserModelConverter.convert(it))
             }
         }
 
@@ -55,7 +57,7 @@ class UserService(private val userRepository: UserRepository,
 
         userRepository.findAll().iterator().forEach {
             if (it.lastName == lastName && it.firstName == firstName) {
-                foundUsersByFullName.add(userDocumentToUserModelConverter.convert(it))
+                foundUsersByFullName.add(userToUserModelConverter.convert(it))
             }
         }
 
@@ -66,10 +68,10 @@ class UserService(private val userRepository: UserRepository,
         val keycloakUser = authenticationService.getKeycloakUser()
         val user = userRepository.findByUsername(keycloakUser.username) ?: createNewUserFrom(keycloakUser)
 
-        return userDocumentToUserProfileDtoConverter.convert(user)
+        return userToUserProfileDtoConverter.convert(user)
     }
 
-    private fun createNewUserFrom(kcUser: KeycloakUser): UserDocument {
+    protected fun createNewUserFrom(kcUser: KeycloakUser): UserDocument {
         val newUser = keycloakUserToUserDocumentConverter.convert(kcUser)
 
         return userRepository.save(newUser)

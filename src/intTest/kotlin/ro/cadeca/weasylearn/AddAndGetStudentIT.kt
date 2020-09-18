@@ -20,7 +20,7 @@ class AddAndGetStudentIT : PostgresIT() {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    private val path = "/api/users"
+    private val path = "/api/user"
 
     private val mapper = jacksonObjectMapper()
 
