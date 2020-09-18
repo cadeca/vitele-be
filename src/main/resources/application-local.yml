@@ -1,0 +1,28 @@
+spring:
+  h2:
+    console:
+      path: /h2
+      enabled: true
+  datasource:
+    url: jdbc:h2:~/.weasylearn/persistence/wasylearn
+    username: wasylearner
+    password: wasylearner
+    driver-class-name: org.h2.Driver
+
+  data:
+    mongodb:
+      host: localhost
+      port: 2025
+      database: weasylearn
+      username: weasylearner
+      password: weasylearner
+      authentication-database: weasylearn
+
+keycloak:
+  auth-server-url: https://accounts.weasylearn.ro
+  realm: weasylearn-local
+  resource: weasylearn-be
+  bearer-only: true
+  principal-attribute: preferred_username
+  ssl-required: external
+  use-resource-role-mappings: true
