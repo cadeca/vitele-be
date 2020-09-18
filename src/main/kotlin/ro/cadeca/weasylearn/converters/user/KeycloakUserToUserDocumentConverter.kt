@@ -8,10 +8,10 @@ import ro.cadeca.weasylearn.services.UserTypeSelector
 
 @Converter
 class KeycloakUserToUserDocumentConverter(private val userTypeSelector: UserTypeSelector) : IConverter<KeycloakUser, UserDocument> {
-    override fun convert(a: KeycloakUser) =
-            UserDocument(username = a.username,
-                    firstName = a.firstName,
-                    lastName = a.lastName,
-                    email = a.email,
-                    type = userTypeSelector.selectType(a))
+    override fun convert(source: KeycloakUser) =
+            UserDocument(username = source.username,
+                    firstName = source.firstName,
+                    lastName = source.lastName,
+                    email = source.email,
+                    type = userTypeSelector.selectType(source))
 }

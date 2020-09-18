@@ -9,10 +9,10 @@ import ro.cadeca.weasylearn.persistence.user.UserDocument
 
 @Converter
 class UserDocumentToUserModelConverter : IConverter<UserDocument, User> {
-    override fun convert(a: UserDocument): User {
-        if (a.type != USER)
-            throw ConversionException("Could not convert document to user: $a")
+    override fun convert(source: UserDocument): User {
+        if (source.type != USER)
+            throw ConversionException("Could not convert document to user: $source")
 
-        return User(a.username, a.firstName, a.lastName, a.dateOfBirth, a.profilePicture, a.email)
+        return User(source.username, source.firstName, source.lastName, source.dateOfBirth, source.profilePicture, source.email)
     }
 }

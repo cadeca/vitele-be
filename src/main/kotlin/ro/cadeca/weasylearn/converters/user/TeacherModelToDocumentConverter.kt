@@ -8,8 +8,8 @@ import ro.cadeca.weasylearn.persistence.user.UserDocument
 
 @Converter
 class TeacherModelToDocumentConverter : IConverter<Teacher, UserDocument> {
-    override fun convert(a: Teacher) =
-            UserDocument(a.userName, a.firstName, a.lastName, a.dateOfBirth, a.profilePicture, a.email, TEACHER, mapTeacherDetails(a))
+    override fun convert(source: Teacher) =
+            UserDocument(source.userName, source.firstName, source.lastName, source.dateOfBirth, source.profilePicture, source.email, TEACHER, mapTeacherDetails(source))
 
     private fun mapTeacherDetails(teacher: Teacher): Map<String, Any> {
         val map = mutableMapOf<String, Any>()

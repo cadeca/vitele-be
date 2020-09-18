@@ -10,13 +10,13 @@ import ro.cadeca.weasylearn.persistence.user.UserDocument
 
 @Converter
 class UserDocumentToTeacherModelConverter : IConverter<UserDocument, Teacher> {
-    override fun convert(a: UserDocument): Teacher {
-        if (a.type != TEACHER)
-            throw ConversionException("Could not convert document to teacher: $a")
+    override fun convert(source: UserDocument): Teacher {
+        if (source.type != TEACHER)
+            throw ConversionException("Could not convert document to teacher: $source")
 
-        val teacher = Teacher(a.username, a.firstName, a.lastName, a.dateOfBirth, a.profilePicture, a.email)
+        val teacher = Teacher(source.username, source.firstName, source.lastName, source.dateOfBirth, source.profilePicture, source.email)
 
-        a.details.let { details ->
+        source.details.let { details ->
             details["department"]?.let { teacher.department = it as String }
             details["titles"]?.let { teacher.titles = it as List<String> }
             details["eduUser"]?.let { teacher.eduUser = it as String }

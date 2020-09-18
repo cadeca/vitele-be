@@ -7,11 +7,11 @@ import ro.cadeca.weasylearn.model.KeycloakUser
 
 @Converter
 class KeycloakAccessTokenToKeycloakUserConverter : IConverter<AccessToken, KeycloakUser> {
-    override fun convert(token: AccessToken): KeycloakUser {
+    override fun convert(source: AccessToken): KeycloakUser {
         return KeycloakUser(
-                token.preferredUsername,
-                token.name, token.givenName,
-                token.familyName,
-                token.email)
+                source.preferredUsername,
+                source.name, source.givenName,
+                source.familyName,
+                source.email)
     }
 }

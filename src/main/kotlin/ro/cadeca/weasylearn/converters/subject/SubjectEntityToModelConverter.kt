@@ -7,6 +7,6 @@ import ro.cadeca.weasylearn.persistence.subject.SubjectEntity
 
 @Converter
 class SubjectEntityToModelConverter : IConverter<SubjectEntity, Subject> {
-    override fun convert(a: SubjectEntity) =
-            Subject(a.name, a.code, a.description, a.semester)
+    override fun convert(source: SubjectEntity) =
+            Subject(source.name, source.code, source.description, source.semester)
 }

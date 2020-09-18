@@ -8,6 +8,6 @@ import ro.cadeca.weasylearn.persistence.user.UserDocument
 
 @Converter
 class UserModelToDocumentConverter : IConverter<User, UserDocument> {
-    override fun convert(a: User) =
-            UserDocument(a.userName, a.firstName, a.lastName, a.dateOfBirth, a.profilePicture, a.email, USER, emptyMap())
+    override fun convert(source: User) =
+            UserDocument(source.userName, source.firstName, source.lastName, source.dateOfBirth, source.profilePicture, source.email, USER, emptyMap())
 }

@@ -13,10 +13,11 @@ class UptUserTypeSelector : UserTypeSelector {
     private val professorEmailDomains = listOf("cs.upt.ro", "upt.ro", "aut.upt.ro")
 
     override fun selectType(kcUser: KeycloakUser): String {
-        if (!kcUser.roles.isNullOrEmpty()) {
-            if (kcUser.roles.contains(STUDENT))
+        val roles = kcUser.roles
+        if (!roles.isNullOrEmpty()) {
+            if (roles.contains(STUDENT))
                 return ro.cadeca.weasylearn.persistence.user.STUDENT
-            else if (kcUser.roles.contains(TEACHER))
+            else if (roles.contains(TEACHER))
                 return ro.cadeca.weasylearn.persistence.user.TEACHER
         }
 
