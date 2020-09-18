@@ -14,6 +14,7 @@ class StudentModelToDocumentConverter : IConverter<Student, UserDocument> {
     private fun mapStudentDetails(student: Student): Map<String, Any> {
         val map = mutableMapOf<String, Any>()
 
+        student.studyType?.let { map["studyType"] = it }
         student.year?.let { map["year"] = it }
         student.group?.let { map["group"] = it }
         student.githubUser?.let { map["githubUser"] = it }

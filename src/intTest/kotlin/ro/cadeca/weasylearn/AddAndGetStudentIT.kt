@@ -28,7 +28,7 @@ class AddAndGetStudentIT : PostgresIT() {
     @WithMockKeycloakAuth(ADMIN, TEACHER)
     fun `i can add an user to the database and then get it from the list of users`() {
         mockMvc.perform(put(path).contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(Student("johnDoe", "John", "Doe", Date(1/1/1990), byteArrayOf(), "john.doe@gmail.com", 2, "1.2", "johnDoeGH", "JohnDoe", "john.doe"))))
+                .content(mapper.writeValueAsString(Student("johnDoe", "John", "Doe", Date(1/1/1990), byteArrayOf(), "john.doe@gmail.com", "bachelor",2, "1.2", "johnDoeGH", "JohnDoe", "john.doe"))))
         val students: List<Student> = mapper.readValue(mockMvc.perform(get(path)).andReturn().response.contentAsString)
 
         val user = students.find { it.lastName == "Doe" } !!
@@ -38,7 +38,8 @@ class AddAndGetStudentIT : PostgresIT() {
         Assertions.assertEquals(1/1/1990, user.dateOfBirth)
         Assertions.assertEquals(byteArrayOf(), user.profilePicture)
         Assertions.assertEquals("john.doe@gmail.com", user.email)
-        Assertions.assertEquals("2", user.year)
+        Assertions.assertEquals("bachelor", user.studyType)
+        Assertions.assertEquals(2, user.year)
         Assertions.assertEquals("1.2", user.group)
         Assertions.assertEquals("johnDoeGH", user.githubUser)
         Assertions.assertEquals("JohnDoe", user.facebookUser)

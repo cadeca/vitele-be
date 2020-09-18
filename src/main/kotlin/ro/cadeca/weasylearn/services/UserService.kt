@@ -1,7 +1,9 @@
 package ro.cadeca.weasylearn.services
 
 import org.springframework.stereotype.Service
+import ro.cadeca.weasylearn.converters.user.KeycloakUserToUserDocumentConverter
 import ro.cadeca.weasylearn.converters.user.UserDocumentToUserModelConverter
+import ro.cadeca.weasylearn.converters.user.UserDocumentToUserProfileDtoConverter
 import ro.cadeca.weasylearn.converters.user.UserModelToDocumentConverter
 import ro.cadeca.weasylearn.dto.UserProfileDTO
 import ro.cadeca.weasylearn.model.KeycloakUser
@@ -12,7 +14,8 @@ import ro.cadeca.weasylearn.persistence.user.UserRepository
 @Service
 class UserService(private val userRepository: UserRepository,
                   private val authenticationService: AuthenticationService,
-                  private val userTypeSelector: UserTypeSelector,
+                  private val userDocumentToUserProfileDtoConverter: UserDocumentToUserProfileDtoConverter,
+                  private val keycloakUserToUserDocumentConverter: KeycloakUserToUserDocumentConverter,
                   private val userDocumentToUserModelConverter: UserDocumentToUserModelConverter,
                   private val userModelToDocumentConverter: UserModelToDocumentConverter) {
 
@@ -62,21 +65,12 @@ class UserService(private val userRepository: UserRepository,
     fun getCurrentUserProfile(): UserProfileDTO {
         val keycloakUser = authenticationService.getKeycloakUser()
         val user = userRepository.findByUsername(keycloakUser.username) ?: createNewUserFrom(keycloakUser)
-        val userProfileDTO = UserProfileDTO(username = user.username,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                email = user.email,
-                type = user.type)
 
-        return userProfileDTO
+        return userDocumentToUserProfileDtoConverter.convert(user)
     }
 
     private fun createNewUserFrom(kcUser: KeycloakUser): UserDocument {
-        val newUser = UserDocument(username = kcUser.username,
-                firstName = kcUser.firstName,
-                lastName = kcUser.lastName,
-                email = kcUser.email,
-                type = userTypeSelector.selectType(kcUser))
+        val newUser = keycloakUserToUserDocumentConverter.convert(kcUser)
 
         return userRepository.save(newUser)
     }

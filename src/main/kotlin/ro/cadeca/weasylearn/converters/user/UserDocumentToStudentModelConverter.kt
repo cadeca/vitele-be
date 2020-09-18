@@ -16,6 +16,7 @@ class UserDocumentToStudentModelConverter : IConverter<UserDocument, Student> {
         val student = Student(a.username, a.firstName, a.lastName, a.dateOfBirth, a.profilePicture, a.email)
 
         a.details.let { details ->
+            details["studyType"]?.let { student.studyType = it as String }
             details["year"]?.let { student.year = it as Int }
             details["group"]?.let { student.group = it as String }
             details["githubUser"]?.let { student.githubUser = it as String }

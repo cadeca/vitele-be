@@ -9,11 +9,10 @@ class Student(
         dateOfBirth: Date? = null,
         profilePicture: ByteArray? = null,
         email: String? = null,
+        var studyType: String? = null,
         var year: Int? = null,
         var group: String? = null,
         var githubUser: String? = null,
         var facebookUser: String? = null,
         var eduUser: String? = null
 ) : User(userName, firstName, lastName, dateOfBirth, profilePicture, email)
-
-//studyType
