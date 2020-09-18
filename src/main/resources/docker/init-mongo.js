@@ -1,3 +1,7 @@
+db.auth('root', 'root')
+
+db = db.getSiblingDB('weasylearn')
+
 db.createUser(
     {
         user: "weasylearner",
@@ -5,8 +9,8 @@ db.createUser(
         roles: [
             {
                 role: "readWrite",
-                db: "test"
+                db: "weasylearn"
             }
         ]
     }
-)
+);

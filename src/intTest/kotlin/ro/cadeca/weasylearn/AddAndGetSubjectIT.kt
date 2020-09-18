@@ -17,7 +17,7 @@ import ro.cadeca.weasylearn.config.TEACHER
 import ro.cadeca.weasylearn.model.Subject
 
 
-class AddAndGetSubjectIT : BasePostgreSQLContainerIT() {
+class AddAndGetSubjectIT : PostgresIT() {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
