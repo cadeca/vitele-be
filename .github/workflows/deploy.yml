@@ -19,9 +19,6 @@ jobs:
         with:
           java-version: 14
 
-      - name: Build and Integration Test
-        run: gradle clean build
-
       - name: Prepare
         id: prep
         run: |
@@ -67,6 +64,9 @@ jobs:
       - name: copy profile from envs repo
         run: |
           cp weasylearn-envs/${{ steps.prep.outputs.environment }}/backend/application-${{ steps.prep.outputs.environment }}.yml src/main/resources/application-${{ steps.prep.outputs.environment }}.yml
+
+      - name: Build and Integration Test
+        run: gradle clean build
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
