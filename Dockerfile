@@ -1,4 +1,4 @@
-FROM openjdk:14-alpine
+FROM openjdk:11-alpine
 
 RUN addgroup -S weasylearn && adduser -S weasy -G weasylearn
 
