@@ -39,7 +39,7 @@ class WebSecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource? {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("https://devweasylearn.ro", "https://demo.devweasylearn.ro", "https://app.devweasylearn.ro")
+        configuration.allowedOrigins = listOf("https://dev.weasylearn.ro", "https://demo.devweasylearn.ro", "https://app.devweasylearn.ro")
         configuration.allowedMethods = listOf("*")
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
