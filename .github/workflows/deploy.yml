@@ -27,14 +27,18 @@ jobs:
         run: |
           DOCKER_IMAGE=weasylearn/weasylearn-backend
           VERSION=noop
+          ENVIRONMENT=noop
           if [[ $GITHUB_REF == refs/heads/* ]]; then
             VERSION=$(echo ${GITHUB_REF#refs/heads/})
             if [ "master" = "$VERSION" ]; then
               VERSION=stage
+              ENVIRONMENT=stage
             elif [ "develop" = "$VERSION" ]; then
               VERSION=dev
+              ENVIRONMENT=dev
             elif [[ $VERSION == release/* ]]; then
               VERSION=$(echo ${VERSION#release/})
+              ENVIRONMENT=prod
             fi
           fi
           if [[ $VERSION == v-* ]]; then
@@ -49,8 +53,20 @@ jobs:
             TAGS="$TAGS,${DOCKER_IMAGE}:v-${MINOR},${DOCKER_IMAGE}:${MINOR},${DOCKER_IMAGE}:v-${MAJOR},${DOCKER_IMAGE}:${MAJOR},${DOCKER_IMAGE}:latest"
           fi
           echo ::set-output name=version::${VERSION}
+          echo ::set-output name=environment::${ENVIRONMENT}
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+
+      - name: checkout envs repo
+        uses: actions/checkout@master
+        with:
+          repository: cadeca/weasylearn-envs
+          token: ${{ secrets.API_TOKEN_GITHUB }}
+          path: weasylearn-envs
+
+      - name: copy profile from envs repo
+        run: |
+          cp weasylearn-envs/${{ steps.prep.outputs.environment }}/backend/application-${{ steps.prep.outputs.environment }}.yml src/main/resources/application-${{ steps.prep.outputs.environment }}.yml
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
