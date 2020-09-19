@@ -87,3 +87,12 @@ jobs:
         with:
           tags: ${{ steps.prep.outputs.tags }}
           push: true
+
+      - name: Update containers through ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script: ${{ secrets.PATH_TO_ENVS }}/${{ steps.prep.outputs.environment }}/restart.sh
