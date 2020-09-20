@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import ro.cadeca.weasylearn.persistence.user.TEACHER
 import ro.cadeca.weasylearn.persistence.user.UserDocument
 import ro.cadeca.weasylearn.persistence.user.UserRepository
+import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
 import ro.cadeca.weasylearn.services.UserService
 import java.util.*
 

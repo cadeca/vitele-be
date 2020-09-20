@@ -3,9 +3,9 @@ package ro.cadeca.weasylearn
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import ro.cadeca.weasylearn.persistence.user.USER
 import ro.cadeca.weasylearn.persistence.user.UserDocument
 import ro.cadeca.weasylearn.persistence.user.UserRepository
+import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
 import ro.cadeca.weasylearn.services.UserService
 import java.util.*
 

@@ -20,7 +20,9 @@ class UserDocument(
 
         var email: String? = null,
 
-        var type: String? = null,
+        var type: String,
 
-        var details: Map<String, Any> = emptyMap()
+        var details: Map<String, Any> = emptyMap(),
+
+        var fullName: String = "${firstName ?: ""} ${lastName ?: ""}".trim()
 ) : BaseDocument()

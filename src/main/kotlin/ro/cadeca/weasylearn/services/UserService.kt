@@ -1,11 +1,17 @@
 package ro.cadeca.weasylearn.services
 
 import org.springframework.stereotype.Service
+import ro.cadeca.weasylearn.converters.factory.UserDocumentToModelConverterFactory
 import ro.cadeca.weasylearn.converters.user.*
 import ro.cadeca.weasylearn.dto.UserProfileDTO
+import ro.cadeca.weasylearn.exceptions.UserNotFoundException
 import ro.cadeca.weasylearn.model.KeycloakUser
 import ro.cadeca.weasylearn.model.User
-import ro.cadeca.weasylearn.persistence.user.*
+import ro.cadeca.weasylearn.persistence.user.UserDocument
+import ro.cadeca.weasylearn.persistence.user.UserRepository
+import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
+import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
+import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
 
 @Service
 class UserService(private val userRepository: UserRepository,
@@ -14,7 +20,8 @@ class UserService(private val userRepository: UserRepository,
                   private val keycloakUserToUserDocumentConverter: KeycloakUserToUserDocumentConverter,
                   private val userToUserModelConverter: UserDocumentToUserModelConverter,
                   private val userToStudentModelConverter: UserDocumentToStudentModelConverter,
-                  private val userToTeacherModelConverter: UserDocumentToTeacherModelConverter) {
+                  private val userToTeacherModelConverter: UserDocumentToTeacherModelConverter,
+                  private val userDocumentToModelConverterFactory: UserDocumentToModelConverterFactory) {
 
     fun findAllStudents() = userRepository.findByType(STUDENT).map(userToStudentModelConverter::convert)
 
@@ -23,40 +30,18 @@ class UserService(private val userRepository: UserRepository,
     fun findAllOtherUsers(): List<User> =
             userRepository.findByType(USER).map(userToUserModelConverter::convert)
 
-    fun findAllByLastName(lastName: String): List<User> {
-        val foundUsersByLastName = arrayListOf<User>()
+    fun findAllUsers(): List<User> = userRepository.findAll()
+            .map { userDocumentToModelConverterFactory.getDocumentToModelConverter(it.type).convert(it) }
 
-        userRepository.findAll().iterator().forEach {
-            if (it.lastName == lastName) {
-                foundUsersByLastName.add(userToUserModelConverter.convert(it))
-            }
-        }
-
-        return foundUsersByLastName
+    fun findAllByNameQuery(query: String): List<User> {
+        return userRepository.findByFullNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query, query)
+                .map { userDocumentToModelConverterFactory.getDocumentToModelConverter(it.type).convert(it) }
     }
 
-    fun findAllByFirstName(firstName: String): List<User> {
-        val foundUsersByFirstName = arrayListOf<User>()
-
-        userRepository.findAll().iterator().forEach {
-            if (it.firstName == firstName) {
-                foundUsersByFirstName.add(userToUserModelConverter.convert(it))
-            }
-        }
-
-        return foundUsersByFirstName
-    }
-
-    fun findAllByFullName(lastName: String, firstName: String): List<User> {
-        val foundUsersByFullName = arrayListOf<User>()
-
-        userRepository.findAll().iterator().forEach {
-            if (it.lastName == lastName && it.firstName == firstName) {
-                foundUsersByFullName.add(userToUserModelConverter.convert(it))
-            }
-        }
-
-        return foundUsersByFullName
+    fun findUserByUsername(username: String): User {
+        return userRepository.findByUsername(username)
+                ?.let { userDocumentToModelConverterFactory.getDocumentToModelConverter(it).convert(it) }
+                ?: throw UserNotFoundException(username)
     }
 
     fun getCurrentUserProfile(): UserProfileDTO {

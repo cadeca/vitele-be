@@ -12,9 +12,9 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import ro.cadeca.weasylearn.config.ADMIN
-import ro.cadeca.weasylearn.config.STUDENT
-import ro.cadeca.weasylearn.config.TEACHER
+import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
+import ro.cadeca.weasylearn.config.Roles.Companion.STUDENT
+import ro.cadeca.weasylearn.config.Roles.Companion.TEACHER
 import ro.cadeca.weasylearn.model.Subject
 
 @AutoConfigureMockMvc

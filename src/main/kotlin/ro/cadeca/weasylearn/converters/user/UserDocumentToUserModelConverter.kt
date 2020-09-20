@@ -4,8 +4,8 @@ import ro.cadeca.weasylearn.annotations.Converter
 import ro.cadeca.weasylearn.converters.ConversionException
 import ro.cadeca.weasylearn.converters.IConverter
 import ro.cadeca.weasylearn.model.User
-import ro.cadeca.weasylearn.persistence.user.USER
 import ro.cadeca.weasylearn.persistence.user.UserDocument
+import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
 
 @Converter
 class UserDocumentToUserModelConverter : IConverter<UserDocument, User> {

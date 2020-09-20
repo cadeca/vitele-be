@@ -4,8 +4,8 @@ import ro.cadeca.weasylearn.annotations.Converter
 import ro.cadeca.weasylearn.converters.ConversionException
 import ro.cadeca.weasylearn.converters.IConverter
 import ro.cadeca.weasylearn.model.Teacher
-import ro.cadeca.weasylearn.persistence.user.TEACHER
 import ro.cadeca.weasylearn.persistence.user.UserDocument
+import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
 
 
 @Converter

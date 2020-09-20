@@ -1,10 +1,9 @@
 package ro.cadeca.weasylearn.services
 
 import org.springframework.stereotype.Component
-import ro.cadeca.weasylearn.config.STUDENT
-import ro.cadeca.weasylearn.config.TEACHER
+import ro.cadeca.weasylearn.config.Roles.Companion.STUDENT
+import ro.cadeca.weasylearn.config.Roles.Companion.TEACHER
 import ro.cadeca.weasylearn.model.KeycloakUser
-import ro.cadeca.weasylearn.persistence.user.USER
 
 @Component
 class UptUserTypeSelector : UserTypeSelector {
@@ -16,9 +15,9 @@ class UptUserTypeSelector : UserTypeSelector {
         val roles = kcUser.roles
         if (!roles.isNullOrEmpty()) {
             if (roles.contains(STUDENT))
-                return ro.cadeca.weasylearn.persistence.user.STUDENT
+                return ro.cadeca.weasylearn.persistence.user.UserTypes.STUDENT
             else if (roles.contains(TEACHER))
-                return ro.cadeca.weasylearn.persistence.user.TEACHER
+                return ro.cadeca.weasylearn.persistence.user.UserTypes.TEACHER
         }
 
         var emailDomain: String? = null
@@ -31,13 +30,13 @@ class UptUserTypeSelector : UserTypeSelector {
 
         if(emailDomain != null) {
             if (emailDomain == "student.upt.ro") {
-                return ro.cadeca.weasylearn.persistence.user.STUDENT
+                return ro.cadeca.weasylearn.persistence.user.UserTypes.STUDENT
             }
             if (professorEmailDomains.contains(emailDomain)) {
-                return ro.cadeca.weasylearn.persistence.user.TEACHER
+                return ro.cadeca.weasylearn.persistence.user.UserTypes.TEACHER
             }
         }
 
-        return USER
+        return ro.cadeca.weasylearn.persistence.user.UserTypes.USER
     }
 }
