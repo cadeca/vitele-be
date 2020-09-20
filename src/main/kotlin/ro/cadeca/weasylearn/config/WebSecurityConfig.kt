@@ -31,19 +31,8 @@ class WebSecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
                 .anyRequest()
                 .authenticated()
 
-
-        http.cors().configurationSource(corsConfigurationSource())
+        http.cors()
         http.csrf().disable()
-    }
-
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource? {
-        val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("https://dev.weasylearn.ro", "https://demo.devweasylearn.ro", "https://app.devweasylearn.ro")
-        configuration.allowedMethods = listOf("*")
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
     }
 
 //    In case we need to skip keycloak for testing purposes

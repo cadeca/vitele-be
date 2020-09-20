@@ -8,14 +8,14 @@ services:
     ports:
       - 2025:27017
     volumes:
-      - mongo-weasylean-local:/data/db
+      - mongo-weasylearn-local:/data/db
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
 
   postgres:
     image: postgres:12.2
     restart: "no"
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: weasylearn
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: secret
       PGDATA: /var/lib/postgresql/data

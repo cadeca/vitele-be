@@ -16,7 +16,7 @@ spring:
       authentication-database: weasylearn
 
 keycloak:
-  auth-server-url: https://accounts.weasylearn.ro
+  auth-server-url: https://accounts.weasylearn.ro/auth
   realm: weasylearn-local
   resource: weasylearn-be
   bearer-only: true
