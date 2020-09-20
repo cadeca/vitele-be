@@ -2,7 +2,7 @@ package ro.cadeca.weasylearn.dto
 
 import java.util.*
 
-class UserDTO(
+open class UserDTO(
         var userName: String,
         var firstName: String? = null,
         var lastName: String? = null,
