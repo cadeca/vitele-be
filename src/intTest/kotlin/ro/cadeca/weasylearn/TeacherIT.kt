@@ -10,33 +10,31 @@ import ro.cadeca.weasylearn.persistence.user.UserRepository
 import ro.cadeca.weasylearn.services.UserService
 import java.util.*
 
-class UsersIT : BaseDataIT() {
+class TeacherIT : BaseDataIT() {
 
     @Autowired
     private lateinit var userService: UserService
 
+    @Autowired
+    private lateinit var userRepository: UserRepository
+
     private val TEACHER_USER_NAME = "testTeacher"
-
     private val TEACHER_FIRST_NAME = "testFirstName"
-
     private val TEACHER_LAST_NAME = "testLastName"
-
     private val TEACHER_BIRTH_DATE = Calendar.getInstance().also { it.set(2020, 1, 1) }.time
     private val TEACHER_EMAIL = "testEmail@test.com"
+
     private val TITLES = "titles"
     private val TEACHER_TITLES = listOf("Prof", "Dr", "Ing")
 
     private val DEPARTMENT = "department"
     private val TEACHER_DEPT = "CTI"
 
-    private val GITHUB_USER = "githubUser"
-    private val TEACHER_GITHUB_USER = "hackerTM"
-
     private val EDU_USER = "eduUser"
     private val TEACHER_EDU_USER = "test@upt.ro"
 
-    @Autowired
-    private lateinit var userRepository: UserRepository
+    private val GITHUB_USER = "githubUser"
+    private val TEACHER_GITHUB_USER = "hackerTM"
 
     @Test
     fun `test retrieve teacher with all details`() {
@@ -48,8 +46,8 @@ class UsersIT : BaseDataIT() {
                 type = TEACHER,
                 details = mapOf(DEPARTMENT to TEACHER_DEPT,
                         TITLES to TEACHER_TITLES,
-                        GITHUB_USER to TEACHER_GITHUB_USER,
-                        EDU_USER to TEACHER_EDU_USER
+                        EDU_USER to TEACHER_EDU_USER,
+                        GITHUB_USER to TEACHER_GITHUB_USER
                 )
         )
 
