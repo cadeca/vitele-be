@@ -1,13 +1,10 @@
 spring:
-  h2:
-    console:
-      path: /h2
-      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: jdbc:h2:~/.weasylearn/persistence/wasylearn
-    username: wasylearner
-    password: wasylearner
-    driver-class-name: org.h2.Driver
+    url: "jdbc:postgresql://localhost:2022/weasylearn"
+    username: admin
+    password: secret
 
   data:
     mongodb:

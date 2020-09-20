@@ -1,11 +1,6 @@
 name: Integration Test
 
 on:
-  push:
-    branches:
-      - master
-      - 'release/**'
-      - develop
   pull_request:
     branches:
       - master
@@ -20,6 +15,6 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v1
         with:
-          java-version: 14
+          java-version: 11
       - name: Integration Test
         run: gradle build
