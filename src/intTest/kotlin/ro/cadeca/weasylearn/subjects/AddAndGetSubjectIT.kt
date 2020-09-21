@@ -1,4 +1,4 @@
-package ro.cadeca.weasylearn
+package ro.cadeca.weasylearn.subjects
 
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import ro.cadeca.weasylearn.PostgresIT
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.config.Roles.Companion.STUDENT
 import ro.cadeca.weasylearn.config.Roles.Companion.TEACHER

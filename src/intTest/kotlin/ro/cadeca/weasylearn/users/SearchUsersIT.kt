@@ -1,4 +1,4 @@
-package ro.cadeca.weasylearn
+package ro.cadeca.weasylearn.users
 
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import ro.cadeca.weasylearn.BaseDataIT
 import ro.cadeca.weasylearn.config.Roles
 import ro.cadeca.weasylearn.dto.*
 import ro.cadeca.weasylearn.persistence.user.UserDocument
