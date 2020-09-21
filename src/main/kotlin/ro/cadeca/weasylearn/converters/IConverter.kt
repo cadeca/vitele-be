@@ -1,5 +1,5 @@
 package ro.cadeca.weasylearn.converters
 
-interface IConverter<A, B> {
-    fun convert(a: A): B
+interface IConverter<SOURCE, TARGET> {
+    fun convert(source: SOURCE): TARGET
 }

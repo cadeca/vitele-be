@@ -1,7 +1,6 @@
 package ro.cadeca.weasylearn
 
 import org.junit.runner.RunWith
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.context.ApplicationContextInitializer
@@ -16,19 +15,15 @@ import org.testcontainers.containers.PostgreSQLContainer
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = [WeasylearnBeApplication::class], initializers = [BaseDataIT.Initializer::class])
 @ActiveProfiles(profiles = ["intTest"])
-@AutoConfigureMockMvc
 abstract class BaseDataIT {
-    companion object {
-        val mongo = MongoDBContainer()
-        val postgres = PostgreSQLContainer<Nothing>().apply {
-            withDatabaseName("postgres")
-            withUsername("integrationUser")
-            withPassword("testPass")
-        }
-    }
-
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
+            val mongo = MongoDBContainer()
+            val postgres = PostgreSQLContainer<Nothing>().apply {
+                withDatabaseName("postgres")
+                withUsername("integrationUser")
+                withPassword("testPass")
+            }
             mongo.start()
             postgres.start()
 
