@@ -1,5 +1,7 @@
 package ro.cadeca.weasylearn
 
+import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Assertions
@@ -7,8 +9,10 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import ro.cadeca.weasylearn.config.Roles
 import ro.cadeca.weasylearn.dto.StudentDTO
 import ro.cadeca.weasylearn.dto.TeacherDTO
 import ro.cadeca.weasylearn.dto.UserDTO
@@ -23,6 +27,7 @@ import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AutoConfigureMockMvc
 class SearchUsersIT : BaseDataIT() {
 
     @Autowired
@@ -119,22 +124,25 @@ class SearchUsersIT : BaseDataIT() {
 
 
     @Test
+    @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all users`() {
-        val allUsers: List<UserWrapperDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/all")).andReturn().response.contentAsString)
+        val allUsers: List<UserWrapperDTO> = mapper.also {
+            it.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        }.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/all")).andReturn().response.contentAsString)
         Assertions.assertNotNull(allUsers)
         Assertions.assertEquals(6, allUsers.size)
-
     }
 
     @Test
+    @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all teachers`() {
         val allTeachers: List<TeacherDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/teachers")).andReturn().response.contentAsString)
         Assertions.assertNotNull(allTeachers)
         Assertions.assertEquals(2, allTeachers.size)
-
     }
 
     @Test
+    @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all students`() {
         val allStudents: List<StudentDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/students")).andReturn().response.contentAsString)
         Assertions.assertNotNull(allStudents)
@@ -142,6 +150,7 @@ class SearchUsersIT : BaseDataIT() {
     }
 
     @Test
+    @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all otherUsers`() {
         val allOtherUsers: List<UserDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/others")).andReturn().response.contentAsString)
         Assertions.assertNotNull(allOtherUsers)
@@ -217,7 +226,7 @@ class SearchUsersIT : BaseDataIT() {
 
     @Test
     fun `search by firstName`() {
-        val userList: List<User> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/search&John")).andReturn().response.contentAsString)
+        val userList: List<User> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/search").param("query", "John")).andReturn().response.contentAsString)
         Assertions.assertNotNull(userList)
         Assertions.assertEquals(2, userList.size)
 
