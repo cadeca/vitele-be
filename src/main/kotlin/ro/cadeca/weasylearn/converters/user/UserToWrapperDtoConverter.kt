@@ -22,5 +22,4 @@ class UserToWrapperDtoConverter(private val studentToDtoConverter: StudentToDtoC
         }
 
     }
-
 }

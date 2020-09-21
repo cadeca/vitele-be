@@ -6,6 +6,7 @@ import ro.cadeca.weasylearn.converters.IConverter
 import ro.cadeca.weasylearn.model.Teacher
 import ro.cadeca.weasylearn.persistence.user.UserDocument
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
+import kotlin.reflect.full.cast
 
 
 @Converter
@@ -18,7 +19,7 @@ class UserDocumentToTeacherModelConverter : IConverter<UserDocument, Teacher> {
 
         source.details.let { details ->
             details["department"]?.let { teacher.department = it as String }
-            details["titles"]?.let { teacher.titles = it as List<String> }
+            details["titles"]?.let { teacher.titles = if (it is List<*>) it.map(String::class::cast) else null }
             details["eduUser"]?.let { teacher.eduUser = it as String }
             details["githubUser"]?.let { teacher.githubUser = it as String }
         }
