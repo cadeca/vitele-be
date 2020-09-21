@@ -1,8 +1,9 @@
-package ro.cadeca.weasylearn
+package ro.cadeca.weasylearn.users
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import ro.cadeca.weasylearn.BaseDataIT
 import ro.cadeca.weasylearn.persistence.user.UserDocument
 import ro.cadeca.weasylearn.persistence.user.UserRepository
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
@@ -40,7 +41,7 @@ class OtherUserIT : BaseDataIT() {
         Assertions.assertEquals(1, allOtherUsers.size)
         val theOtherUser = allOtherUsers.first()
         Assertions.assertNotNull(theOtherUser)
-        Assertions.assertEquals(OTHER_USER_USER_NAME, theOtherUser.userName)
+        Assertions.assertEquals(OTHER_USER_USER_NAME, theOtherUser.username)
         Assertions.assertEquals(OTHER_USER_FIRST_NAME, theOtherUser.firstName)
         Assertions.assertEquals(OTHER_USER_LAST_NAME, theOtherUser.lastName)
         Assertions.assertEquals(OTHER_USER_BIRTH_DATE, theOtherUser.dateOfBirth)

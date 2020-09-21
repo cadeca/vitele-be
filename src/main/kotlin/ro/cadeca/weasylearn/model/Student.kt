@@ -3,7 +3,7 @@ package ro.cadeca.weasylearn.model
 import java.util.*
 
 class Student(
-        userName: String,
+        username: String,
         firstName: String? = null,
         lastName: String? = null,
         dateOfBirth: Date? = null,
@@ -15,4 +15,4 @@ class Student(
         var githubUser: String? = null,
         var facebookUser: String? = null,
         var eduUser: String? = null
-) : User(userName, firstName, lastName, dateOfBirth, profilePicture, email)
+) : User(username, firstName, lastName, dateOfBirth, profilePicture, email)

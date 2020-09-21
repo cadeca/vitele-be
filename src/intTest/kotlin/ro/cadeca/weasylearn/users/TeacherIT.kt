@@ -1,9 +1,10 @@
-package ro.cadeca.weasylearn
+package ro.cadeca.weasylearn.users
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import ro.cadeca.weasylearn.BaseDataIT
 import ro.cadeca.weasylearn.persistence.user.UserDocument
 import ro.cadeca.weasylearn.persistence.user.UserRepository
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
@@ -58,7 +59,7 @@ class TeacherIT : BaseDataIT() {
         assertEquals(1, allTeachers.size)
         val theTeacher = allTeachers.first()
         assertNotNull(theTeacher)
-        assertEquals(TEACHER_USER_NAME, theTeacher.userName)
+        assertEquals(TEACHER_USER_NAME, theTeacher.username)
         assertEquals(TEACHER_FIRST_NAME, theTeacher.firstName)
         assertEquals(TEACHER_LAST_NAME, theTeacher.lastName)
         assertEquals(TEACHER_BIRTH_DATE, theTeacher.dateOfBirth)

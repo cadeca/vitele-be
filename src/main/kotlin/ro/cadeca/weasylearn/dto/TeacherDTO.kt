@@ -2,7 +2,7 @@ package ro.cadeca.weasylearn.dto
 
 import java.util.*
 
-class TeacherDTO(userName: String,
+class TeacherDTO(username: String,
                  firstName: String?,
                  lastName: String?,
                  dateOfBirth: Date?,
@@ -12,7 +12,7 @@ class TeacherDTO(userName: String,
                  var titles: List<String>? = null,
                  var eduUser: String? = null,
                  var githubUser: String? = null
-) : UserDTO(userName,
+) : UserDTO(username,
         firstName,
         lastName,
         dateOfBirth,
