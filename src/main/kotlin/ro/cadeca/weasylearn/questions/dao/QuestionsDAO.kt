@@ -4,10 +4,10 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
+import ro.cadeca.weasylearn.converters.MapperService
 import ro.cadeca.weasylearn.questions.model.Question
 import ro.cadeca.weasylearn.questions.persistence.QuestionDoc
 import ro.cadeca.weasylearn.questions.persistence.QuestionsRepository
-import ro.cadeca.weasylearn.services.MapperService
 import java.util.stream.Collectors
 
 @Service
@@ -17,7 +17,8 @@ class QuestionsDAO(
         private val mongoTemplate: MongoTemplate
 ) {
     fun save(question: Question) {
-        questionsRepository.save(mapperService.map(question))
+        val questionDoc: QuestionDoc = mapperService.map(question)
+        questionsRepository.save(questionDoc)
     }
 
 
