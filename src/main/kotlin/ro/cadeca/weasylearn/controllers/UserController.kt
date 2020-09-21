@@ -33,7 +33,7 @@ class UserController(private val userService: UserService,
     @RolesAllowed(ADMIN)
     fun findAllUsers(): List<UserWrapperDTO> = userService.findAllUsers().map(userToWrapperDtoConverter::convert)
 
-    @GetMapping("other")
+    @GetMapping("others")
     @RolesAllowed(ADMIN)
     fun findAllOtherUsers(): List<UserDTO> = userService.findAllOtherUsers().map(userToDtoConverter::convert)
 

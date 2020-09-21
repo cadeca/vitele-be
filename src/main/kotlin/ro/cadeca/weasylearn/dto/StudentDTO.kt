@@ -1,6 +1,5 @@
 package ro.cadeca.weasylearn.dto
 
-import ro.cadeca.weasylearn.persistence.subject.SubjectEntity
 import java.util.*
 
 class StudentDTO(userName: String,
@@ -11,10 +10,10 @@ class StudentDTO(userName: String,
                  email: String?,
                  var studyType: String? = null,
                  var year: Int? = null,
-                 var groupId: String? = null,
-                 var university: String? = null,
-                 var faculty: String? = null,
-                 var department: String? = null) :
+                 var group: String? = null,
+                 var githubUser: String? = null,
+                 var facebookUser: String? = null,
+                 var eduUser: String? = null) :
         UserDTO(
                 userName,
                 firstName,
