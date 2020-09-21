@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class WeasylearnBeApplication
 
 fun main(args: Array<String>) {
-	runApplication<WeasylearnBeApplication>(*args)
+    runApplication<WeasylearnBeApplication>(*args)
 }

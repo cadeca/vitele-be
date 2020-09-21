@@ -10,14 +10,14 @@ import javax.persistence.InheritanceType
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 class SubjectEntity(
         @Column
-        var name: String,
+        var name: String? = null,
 
         @Column
-        var code: String,
+        var code: String? = null,
 
         @Column
-        var description: String,
+        var description: String? = null,
 
         @Column
-        var semester: Int
+        var semester: Int? = null
 ) : BaseEntity()
