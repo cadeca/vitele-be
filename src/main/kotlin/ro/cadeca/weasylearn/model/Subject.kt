@@ -8,5 +8,5 @@ class Subject(
         var teacher: Teacher?,
         var tutors: List<User>?,
         var students: List<Student>?,
-        var schedule: List<SubjectSchedule>
+        var schedule: List<SubjectSchedule>?
 )

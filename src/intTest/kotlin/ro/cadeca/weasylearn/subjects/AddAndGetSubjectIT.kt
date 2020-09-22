@@ -8,7 +8,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import ro.cadeca.weasylearn.BaseDataIT
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
@@ -39,7 +40,7 @@ class AddAndGetSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(TEACHER, STUDENT)
     fun `teachers or students cannot add subjects`() {
-        mockMvc().perform(put(path).contentType(MediaType.APPLICATION_JSON)
+        mockMvc().perform(post(path).contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(SubjectDTO("name", "code", "description", 3)))).andExpect(status().isForbidden)
     }
 
