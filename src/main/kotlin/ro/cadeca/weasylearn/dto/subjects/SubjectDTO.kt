@@ -12,5 +12,6 @@ class SubjectDTO(
         var teacher: TeacherDTO? = null,
         var tutors: List<UserDTO>? = null,
         var students: List<StudentDTO>? = null,
-        var schedule: List<SubjectScheduleDTO>? = null
+        var schedule: List<SubjectScheduleDTO>? = null,
+        var id: Long? = null
 )

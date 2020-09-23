@@ -11,16 +11,16 @@ class SubjectEntity(
         @Column
         var code: String,
         @Column
-        var description: String?,
+        var description: String? = null,
         @Column
-        var semester: Int?,
+        var semester: Int? = null,
         @Column
-        var teacher: String?,
+        var teacher: String? = null,
         @ElementCollection
-        var tutors: List<String>?,
+        var tutors: List<String>? = null,
         @ElementCollection
-        var students: List<String>?,
+        var students: List<String>? = null,
         @OneToMany
         @JoinColumn
-        var schedule: List<SubjectScheduleEntity>?
+        var schedule: List<SubjectScheduleEntity>? = null
 ) : BaseEntity()

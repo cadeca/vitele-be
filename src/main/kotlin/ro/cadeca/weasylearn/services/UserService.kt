@@ -51,9 +51,15 @@ class UserService(private val userRepository: UserRepository,
         return userToUserProfileDtoConverter.convert(user)
     }
 
+    fun isType(username: String, type: String) =
+            userRepository.existsByUsernameAndType(username, type)
+
     protected fun createNewUserFrom(kcUser: KeycloakUser): UserDocument {
         val newUser = keycloakUserToUserDocumentConverter.convert(kcUser)
 
         return userRepository.save(newUser)
     }
+
+    fun exists(username: String) =
+            userRepository.existsByUsername(username)
 }

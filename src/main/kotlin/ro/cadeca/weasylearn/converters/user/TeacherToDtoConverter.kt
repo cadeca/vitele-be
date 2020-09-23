@@ -9,5 +9,5 @@ import ro.cadeca.weasylearn.model.Teacher
 @Converter
 class TeacherToDtoConverter(private val mapperService: MapperService) : IConverter<Teacher, TeacherDTO> {
     override fun convert(source: Teacher): TeacherDTO =
-            mapperService.map(source, TeacherDTO::class)
+            mapperService.map(source)
 }
