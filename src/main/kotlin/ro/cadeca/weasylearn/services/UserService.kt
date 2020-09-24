@@ -1,6 +1,7 @@
 package ro.cadeca.weasylearn.services
 
 import org.springframework.stereotype.Service
+import ro.cadeca.weasylearn.config.Roles
 import ro.cadeca.weasylearn.converters.factory.UserDocumentToModelConverterFactory
 import ro.cadeca.weasylearn.converters.user.*
 import ro.cadeca.weasylearn.dto.UserProfileDTO
@@ -54,9 +55,16 @@ class UserService(private val userRepository: UserRepository,
     }
 
     protected fun createNewUserFrom(kcUser: KeycloakUser): UserDocument {
-        val newUser = keycloakUserToUserDocumentConverter.convert(kcUser)
+        var newUser = keycloakUserToUserDocumentConverter.convert(kcUser)
+        newUser = userRepository.save(newUser)
 
-        return userRepository.save(newUser)
+        val username = newUser.username
+        when (newUser.type) {
+            STUDENT -> keycloakAdminService.assignRoleToUser(username, Roles.STUDENT)
+            TEACHER -> keycloakAdminService.assignRoleToUser(username, Roles.TEACHER)
+        }
+
+        return newUser
     }
 
     fun convertUserToType(username: String, type: String) {
