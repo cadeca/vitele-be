@@ -12,10 +12,12 @@ import ro.cadeca.weasylearn.persistence.user.UserRepository
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
+import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
 
 @Service
 class UserService(private val userRepository: UserRepository,
                   private val authenticationService: AuthenticationService,
+                  private val keycloakAdminService: KeycloakAdminService,
                   private val userToUserProfileDtoConverter: UserDocumentToUserProfileDtoConverter,
                   private val keycloakUserToUserDocumentConverter: KeycloakUserToUserDocumentConverter,
                   private val userToUserModelConverter: UserDocumentToUserModelConverter,
@@ -55,5 +57,13 @@ class UserService(private val userRepository: UserRepository,
         val newUser = keycloakUserToUserDocumentConverter.convert(kcUser)
 
         return userRepository.save(newUser)
+    }
+
+    fun convertUserToType(username: String, type: String) {
+        val userDocument = userRepository.findByUsername(username) ?: throw UserNotFoundException(username)
+        userDocument.type = type
+        userRepository.save(userDocument)
+
+        keycloakAdminService.assignRoleToUser(username, type)
     }
 }
