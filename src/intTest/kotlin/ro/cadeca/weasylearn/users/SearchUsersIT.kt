@@ -6,22 +6,13 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.ClassRule
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import ro.cadeca.weasylearn.BaseDataIT
-import ro.cadeca.weasylearn.MyMongoContainer
+import ro.cadeca.weasylearn.*
 import ro.cadeca.weasylearn.config.Roles
 import ro.cadeca.weasylearn.dto.*
-import ro.cadeca.weasylearn.persistence.user.UserDocument
-import ro.cadeca.weasylearn.persistence.user.UserRepository
-import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
-import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
-import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
-import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
@@ -35,98 +26,6 @@ class SearchUsersIT : BaseDataIT() {
     private val path = "/api/user"
 
     private val mapper = jacksonObjectMapper()
-
-    @Autowired
-    private lateinit var userRepository: UserRepository
-
-    val rioBirthDate: Date = Calendar.getInstance().also { it.set(1985, 1, 1) }.time
-    val tokyoBirthDate: Date = Calendar.getInstance().also { it.set(1990, 2, 2) }.time
-    val elProfessorBirthDate: Date = Calendar.getInstance().also { it.set(1987, 4, 20) }.time
-    val berlinBirthDate: Date = Calendar.getInstance().also { it.set(1982, 10, 9) }.time
-    val doeBirthDate: Date = Calendar.getInstance().also { it.set(2000, 6, 10) }.time
-    val snowBirthDate: Date = Calendar.getInstance().also { it.set(1997, 5, 10) }.time
-
-    @BeforeAll
-    fun setup() {
-        val user1 = UserDocument(username = "rioCity",
-                firstName = "Rio",
-                lastName = "City",
-                dateOfBirth = rioBirthDate,
-                email = "rio@gmail.com",
-                type = USER
-        )
-
-        val user2 = UserDocument(username = "tokyo",
-                firstName = "Tokyo Drift",
-                lastName = "City",
-                dateOfBirth = tokyoBirthDate,
-                email = "tokyo@yahoo.com",
-                type = USER
-        )
-
-        val teacher1 = UserDocument(username = "elProfessor",
-                firstName = "Professor",
-                lastName = "Papel",
-                dateOfBirth = elProfessorBirthDate,
-                email = "professor.papel@upt.ro",
-                type = TEACHER,
-                details = mapOf("department" to "CTI",
-                        "titles" to listOf("prof.", "dr.", "ing."),
-                        "eduUser" to "professor.papel",
-                        "githubUser" to "professorPapel"
-                )
-        )
-
-        val teacher2 = UserDocument(username = "berlin",
-                firstName = "Berlin",
-                lastName = "Fonollosa",
-                dateOfBirth = berlinBirthDate,
-                email = "berlin.fonollosa@aut.upt.ro",
-                type = TEACHER,
-                details = mapOf("department" to "AIA",
-                        "titles" to listOf("conf.", "dr.", "ing."),
-                        "eduUser" to "berlin.fonollosa",
-                        "githubUser" to "berlinFonollosa"
-                )
-        )
-
-        val student1 = UserDocument(username = "johnDoe",
-                firstName = "John Albert",
-                lastName = "Doe",
-                dateOfBirth = doeBirthDate,
-                email = "john.doe@student.upt.ro",
-                type = STUDENT,
-                details = mapOf("studyType" to "Bachelor",
-                        "year" to 2,
-                        "group" to "2.1",
-                        "githubUser" to "john_doe",
-                        "facebookUser" to "JohnDoe",
-                        "eduUser" to "john.doe"
-                )
-        )
-
-        val student2 = UserDocument(username = "JohnSnow",
-                firstName = "John",
-                lastName = "Snow",
-                dateOfBirth = snowBirthDate,
-                email = "john.snow@student.upt.ro",
-                type = STUDENT,
-                details = mapOf("studyType" to "Master",
-                        "year" to 1,
-                        "group" to "2.2",
-                        "githubUser" to "john_snow",
-                        "facebookUser" to "JohnSnow",
-                        "eduUser" to "john.snow"
-                )
-        )
-
-        userRepository.save(user1)
-        userRepository.save(user2)
-        userRepository.save(teacher1)
-        userRepository.save(teacher2)
-        userRepository.save(student1)
-        userRepository.save(student2)
-    }
 
 
     @Test

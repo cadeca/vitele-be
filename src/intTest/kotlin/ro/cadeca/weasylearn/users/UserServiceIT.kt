@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import ro.cadeca.weasylearn.BaseDataIT
+import ro.cadeca.weasylearn.model.Student
+import ro.cadeca.weasylearn.model.Teacher
 import ro.cadeca.weasylearn.persistence.user.StudyType.Companion.BACHELOR
 import ro.cadeca.weasylearn.persistence.user.UserDocument
 import ro.cadeca.weasylearn.persistence.user.UserRepository
@@ -39,10 +41,7 @@ class UserServiceIT : BaseDataIT() {
 
         userRepository.save(ud)
 
-        val allStudents = userService.findAllStudents()
-        Assertions.assertNotNull(allStudents)
-        Assertions.assertEquals(1, allStudents.size)
-        val theStudent = allStudents.first()
+        val theStudent = userService.findUserByUsername(ud.username) as Student
         Assertions.assertNotNull(theStudent)
         Assertions.assertEquals(STUDENT_USER_NAME, theStudent.username)
         Assertions.assertEquals(STUDENT_FIRST_NAME, theStudent.firstName)
@@ -55,6 +54,8 @@ class UserServiceIT : BaseDataIT() {
         Assertions.assertEquals(STUDENT_GITHUB_USER, theStudent.githubUser)
         Assertions.assertEquals(STUDENT_FACEBOOK_USER, theStudent.facebookUser)
         Assertions.assertEquals(STUDENT_EDU_USER, theStudent.eduUser)
+
+        userRepository.delete(ud)
     }
 
     @Test
@@ -74,10 +75,7 @@ class UserServiceIT : BaseDataIT() {
 
         userRepository.save(ud)
 
-        val allTeachers = userService.findAllTeachers()
-        Assertions.assertNotNull(allTeachers)
-        Assertions.assertEquals(1, allTeachers.size)
-        val theTeacher = allTeachers.first()
+        val theTeacher = userService.findUserByUsername(ud.username) as Teacher
         Assertions.assertNotNull(theTeacher)
         Assertions.assertEquals(TEACHER_USER_NAME, theTeacher.username)
         Assertions.assertEquals(TEACHER_FIRST_NAME, theTeacher.firstName)
@@ -88,6 +86,8 @@ class UserServiceIT : BaseDataIT() {
         Assertions.assertEquals(TEACHER_TITLES.toSet(), theTeacher.titles?.toSet())
         Assertions.assertEquals(TEACHER_EDU_USER, theTeacher.eduUser)
         Assertions.assertEquals(TEACHER_GITHUB_USER, theTeacher.githubUser)
+
+        userRepository.delete(ud)
     }
 
     @Test
@@ -102,16 +102,15 @@ class UserServiceIT : BaseDataIT() {
 
         userRepository.save(ud)
 
-        val allOtherUsers = userService.findAllOtherUsers()
-        Assertions.assertNotNull(allOtherUsers)
-        Assertions.assertEquals(1, allOtherUsers.size)
-        val theOtherUser = allOtherUsers.first()
+        val theOtherUser = userService.findUserByUsername(ud.username)
         Assertions.assertNotNull(theOtherUser)
         Assertions.assertEquals(OTHER_USER_USER_NAME, theOtherUser.username)
         Assertions.assertEquals(OTHER_USER_FIRST_NAME, theOtherUser.firstName)
         Assertions.assertEquals(OTHER_USER_LAST_NAME, theOtherUser.lastName)
         Assertions.assertEquals(OTHER_USER_BIRTH_DATE, theOtherUser.dateOfBirth)
         Assertions.assertEquals(OTHER_USER_EMAIL, theOtherUser.email)
+
+        userRepository.delete(ud)
     }
 
     companion object {

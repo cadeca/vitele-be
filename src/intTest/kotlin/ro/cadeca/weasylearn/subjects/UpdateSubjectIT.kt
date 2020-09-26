@@ -5,23 +5,18 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.fail
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import ro.cadeca.weasylearn.BaseDataIT
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.dto.subjects.SubjectDTO
 import ro.cadeca.weasylearn.dto.subjects.SubjectSaveDTO
-import ro.cadeca.weasylearn.persistence.subject.SubjectEntity
-import ro.cadeca.weasylearn.persistence.subject.SubjectRepository
-import ro.cadeca.weasylearn.persistence.user.UserDocument
-import ro.cadeca.weasylearn.persistence.user.UserRepository
-import ro.cadeca.weasylearn.persistence.user.UserTypes
-import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
+import ro.cadeca.weasylearn.student1
+import ro.cadeca.weasylearn.student2
+import ro.cadeca.weasylearn.teacher1
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UpdateSubjectIT : BaseDataIT() {
@@ -30,62 +25,6 @@ class UpdateSubjectIT : BaseDataIT() {
 
     private val mapper = jacksonObjectMapper()
 
-    @Autowired
-    private lateinit var userRepository: UserRepository
-
-    @Autowired
-    private lateinit var subjectRepository: SubjectRepository
-
-    private val teacher = UserDocument(
-            username = "berlin",
-            firstName = "Berlin",
-            lastName = "Fonollosa",
-            email = "berlin.fonollosa@aut.upt.ro",
-            type = UserTypes.TEACHER,
-            details = mapOf("department" to "AIA",
-                    "titles" to listOf("conf.", "dr.", "ing."),
-                    "eduUser" to "berlin.fonollosa",
-                    "githubUser" to "berlinFonollosa"
-            )
-    )
-    private val studentDoe = UserDocument(
-            username = "johnDoe",
-            firstName = "John Albert",
-            lastName = "Doe",
-            email = "john.doe@student.upt.ro",
-            type = STUDENT,
-            details = mapOf("studyType" to "Bachelor",
-                    "year" to 2,
-                    "group" to "2.1",
-                    "githubUser" to "john_doe",
-                    "facebookUser" to "JohnDoe",
-                    "eduUser" to "john.doe"
-            )
-    )
-    private val studentSnow = UserDocument(username = "JohnSnow",
-            firstName = "John",
-            lastName = "Snow",
-            email = "john.snow@student.upt.ro",
-            type = STUDENT,
-            details = mapOf("studyType" to "Master",
-                    "year" to 1,
-                    "group" to "2.2",
-                    "githubUser" to "john_snow",
-                    "facebookUser" to "JohnSnow",
-                    "eduUser" to "john.snow"
-            )
-    )
-
-    @BeforeAll
-    fun prepareDatabase() {
-        subjectRepository.save(SubjectEntity("subj 1 e2", "code1", "description1"))
-        subjectRepository.save(SubjectEntity("subj2", "code2", semester = 1))
-
-        userRepository.save(teacher)
-        userRepository.save(studentDoe)
-        userRepository.save(studentSnow)
-    }
-
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `get subject and update it to change teacher tutors and students`() {
@@ -93,11 +32,11 @@ class UpdateSubjectIT : BaseDataIT() {
         assertEquals(1, subjects.size)
         val subject = SubjectSaveDTO(
                 name = subjects.first().name,
-                code = subjects.first().name,
+                code = subjects.first().code,
                 id = subjects.first().id,
-                teacher = teacher.username,
-                students = listOf(studentDoe.username, studentSnow.username),
-                tutors = listOf(studentDoe.username, teacher.username)
+                teacher = teacher1.username,
+                students = listOf(student1.username, student2.username),
+                tutors = listOf(student1.username, teacher1.username)
         )
 
         mockMvc().perform(post(path).contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(subject)))
@@ -106,12 +45,12 @@ class UpdateSubjectIT : BaseDataIT() {
         val newSubject = newSubjects.first()
 
         assertEquals("code1", newSubject.code)
-        assertEquals(teacher.email, newSubject.teacher?.email)
+        assertEquals(teacher1.email, newSubject.teacher?.email)
         assertEquals(2, newSubject.students?.size)
-        assertTrue(newSubject.students?.map { it.email }?.containsAll(setOf(studentDoe.email, studentSnow.email))
+        assertTrue(newSubject.students?.map { it.email }?.containsAll(setOf(student1.email, student2.email))
                 ?: fail("Students is null"))
         assertEquals(2, newSubject.tutors?.size)
-        assertTrue(newSubject.tutors?.map { it.email }?.containsAll(setOf(studentDoe.email, teacher.email))
+        assertTrue(newSubject.tutors?.map { it.email }?.containsAll(setOf(student1.email, teacher1.email))
                 ?: fail("Tutors is null"))
     }
 
