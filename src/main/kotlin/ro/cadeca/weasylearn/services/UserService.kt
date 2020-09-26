@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import ro.cadeca.weasylearn.converters.factory.UserDocumentToModelConverterFactory
 import ro.cadeca.weasylearn.converters.user.*
 import ro.cadeca.weasylearn.dto.UserProfileDTO
-import ro.cadeca.weasylearn.exceptions.UserNotFoundException
+import ro.cadeca.weasylearn.exceptions.user.UserNotFoundException
 import ro.cadeca.weasylearn.model.KeycloakUser
 import ro.cadeca.weasylearn.model.User
 import ro.cadeca.weasylearn.persistence.user.UserDocument

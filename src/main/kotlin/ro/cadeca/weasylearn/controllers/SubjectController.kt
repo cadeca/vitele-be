@@ -5,6 +5,7 @@ import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.converters.subject.SubjectFromDtoConverter
 import ro.cadeca.weasylearn.converters.subject.SubjectToDtoConverter
 import ro.cadeca.weasylearn.dto.subjects.SubjectDTO
+import ro.cadeca.weasylearn.dto.subjects.SubjectSaveDTO
 import ro.cadeca.weasylearn.services.SubjectService
 import javax.annotation.security.RolesAllowed
 
@@ -21,10 +22,16 @@ class SubjectController(
     fun search(@RequestParam(required = false) query: String?): List<SubjectDTO> =
             subjectService.search(query).map(subjectToDtoConverter::convert)
 
+    @GetMapping("/{id}")
+    @RolesAllowed
+    fun findById(@PathVariable id: Long): SubjectDTO {
+        return subjectService.findById(id).let(subjectToDtoConverter::convert)
+    }
+
     @PostMapping
     @RolesAllowed(ADMIN)
-    fun createOrUpdate(@RequestBody subject: SubjectDTO) =
-            subjectService.create(subjectFromDtoConverter.convert(subject))
+    fun save(@RequestBody subject: SubjectSaveDTO) =
+            subjectService.save(subject)
 
     @PutMapping("/{id}/teacher")
     @RolesAllowed(ADMIN)
