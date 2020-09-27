@@ -1,7 +1,6 @@
 package ro.cadeca.weasylearn.services
 
 import org.springframework.stereotype.Service
-import ro.cadeca.weasylearn.config.Roles
 import ro.cadeca.weasylearn.converters.factory.UserDocumentToModelConverterFactory
 import ro.cadeca.weasylearn.converters.user.*
 import ro.cadeca.weasylearn.dto.UserProfileDTO
@@ -14,6 +13,7 @@ import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
 import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
+import javax.annotation.PostConstruct
 
 @Service
 class UserService(private val userRepository: UserRepository,
@@ -55,16 +55,8 @@ class UserService(private val userRepository: UserRepository,
     }
 
     protected fun createNewUserFrom(kcUser: KeycloakUser): UserDocument {
-        var newUser = keycloakUserToUserDocumentConverter.convert(kcUser)
-        newUser = userRepository.save(newUser)
-
-        val username = newUser.username
-        when (newUser.type) {
-            STUDENT -> keycloakAdminService.assignRoleToUser(username, Roles.STUDENT)
-            TEACHER -> keycloakAdminService.assignRoleToUser(username, Roles.TEACHER)
-        }
-
-        return newUser
+        return keycloakUserToUserDocumentConverter.convert(kcUser)
+                .let { userRepository.save(it) }
     }
 
     fun convertUserToType(username: String, type: String) {
@@ -73,5 +65,13 @@ class UserService(private val userRepository: UserRepository,
         userRepository.save(userDocument)
 
         keycloakAdminService.assignRoleToUser(username, type)
+    }
+
+    @PostConstruct
+    fun syncWithKeycloakUsers() {
+        keycloakAdminService.getAllUsers()
+                .forEach {
+                    userRepository.findByUsername(it.username) ?: userRepository.save(createNewUserFrom(it))
+                }
     }
 }

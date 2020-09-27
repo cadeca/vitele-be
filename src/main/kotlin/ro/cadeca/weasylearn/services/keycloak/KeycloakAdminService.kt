@@ -8,6 +8,7 @@ import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import ro.cadeca.weasylearn.model.KeycloakUser
 
 @Service
 class KeycloakAdminService(
@@ -21,7 +22,7 @@ class KeycloakAdminService(
         private val mainRealm: String,
         @Value("\${keycloak.server.url}")
         private val serverUrl: String,
-        @Value("\${keycloak.be.client.id")
+        @Value("\${keycloak.be.client.id}")
         private val beClientId: String,
 
         private val passwordGenerator: PasswordGenerator
@@ -95,5 +96,20 @@ class KeycloakAdminService(
         val userId = users().search(username).first().id
         val userResource = user(userId)
         userResource.roles().clientLevel(clientId()).add(listOf(userClientRole))
+    }
+
+    fun getAllUsers() =
+            users().list().map {
+                KeycloakUser(
+                        username = it.username,
+                        firstName = it.firstName,
+                        lastName = it.lastName,
+                        email = it.email,
+                        roles = getRoles(it)
+                )
+            }
+
+    private fun getRoles(it: UserRepresentation): List<String> {
+        return user(it.id).roles().clientLevel(clientId()).listEffective().map { it.name }
     }
 }
