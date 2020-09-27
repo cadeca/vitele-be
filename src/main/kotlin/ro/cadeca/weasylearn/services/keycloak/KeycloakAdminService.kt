@@ -21,17 +21,19 @@ class KeycloakAdminService(
         private val mainRealm: String,
         @Value("\${keycloak.server.url}")
         private val serverUrl: String,
+        @Value("\${keycloak.be.client.id")
+        private val beClientId: String,
 
         private val passwordGenerator: PasswordGenerator
 ) {
 
     private var _clientId: String? = null
 
-    private val keycloak = KeycloakBuilder.builder() //
-            .serverUrl(serverUrl) //
-            .realm(mainRealm) //
-            .grantType(OAuth2Constants.CLIENT_CREDENTIALS) //
-            .clientId(clientId) //
+    private val keycloak = KeycloakBuilder.builder()
+            .serverUrl(serverUrl)
+            .realm(mainRealm)
+            .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+            .clientId(clientId)
             .clientSecret(clientSecret)
             .build()
 
@@ -52,7 +54,7 @@ class KeycloakAdminService(
     }
 
     private fun clientId(): String {
-        return _clientId ?: realm().clients().findByClientId(clientId).first().id.also { _clientId = it }
+        return _clientId ?: realm().clients().findByClientId(beClientId).first().id.also { _clientId = it }
     }
 
     private fun getRole(role: String): RoleResource {
