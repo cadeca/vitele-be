@@ -29,10 +29,10 @@ import ro.cadeca.weasylearn.persistence.user.UserRepository
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class BaseDataIT : ServletKeycloakAuthUnitTestingSupport() {
     @Autowired
-    private lateinit var userRepository: UserRepository
+    protected lateinit var userRepository: UserRepository
 
     @Autowired
-    private lateinit var subjectRepository: SubjectRepository
+    protected lateinit var subjectRepository: SubjectRepository
 
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {

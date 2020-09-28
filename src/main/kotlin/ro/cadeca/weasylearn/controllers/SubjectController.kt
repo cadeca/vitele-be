@@ -2,6 +2,8 @@ package ro.cadeca.weasylearn.controllers
 
 import org.springframework.web.bind.annotation.*
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
+import ro.cadeca.weasylearn.config.Roles.Companion.STUDENT
+import ro.cadeca.weasylearn.config.Roles.Companion.TEACHER
 import ro.cadeca.weasylearn.converters.subject.SubjectFromDtoConverter
 import ro.cadeca.weasylearn.converters.subject.SubjectToDtoConverter
 import ro.cadeca.weasylearn.dto.subjects.SubjectDTO
@@ -17,10 +19,16 @@ class SubjectController(
         private val subjectToDtoConverter: SubjectToDtoConverter
 ) {
 
-    @GetMapping
-    @RolesAllowed(ADMIN)
+    @GetMapping("/search")
+    @RolesAllowed(ADMIN, TEACHER, STUDENT)
     fun search(@RequestParam(required = false) query: String?): List<SubjectDTO> =
             subjectService.search(query).map(subjectToDtoConverter::convert)
+
+    @GetMapping
+    @RolesAllowed(ADMIN, TEACHER, STUDENT)
+    fun getUsersSubjects(): List<SubjectDTO> =
+            subjectService.getUsersSubjects().map(subjectToDtoConverter::convert)
+
 
     @GetMapping("/{id}")
     @RolesAllowed

@@ -5,21 +5,14 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import ro.cadeca.weasylearn.BaseDataIT
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
-import ro.cadeca.weasylearn.config.Roles.Companion.STUDENT
-import ro.cadeca.weasylearn.config.Roles.Companion.TEACHER
 import ro.cadeca.weasylearn.dto.subjects.SubjectDTO
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GetSubjectIT : BaseDataIT() {
 
-    private val path = "/api/subject"
+    private val path = "/api/subject/search"
 
     private val mapper = jacksonObjectMapper()
 
@@ -28,12 +21,5 @@ class GetSubjectIT : BaseDataIT() {
     fun `i can query a subject by name containing or code containing`() {
         val subjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get(path).param("query", "e2")).andReturn().response.contentAsString)
         assertEquals(2, subjects.size)
-    }
-
-    @Test
-    @WithMockKeycloakAuth(TEACHER, STUDENT)
-    fun `teachers or students cannot add subjects`() {
-        mockMvc().perform(post(path).contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(SubjectDTO("name", "code", "description", 3)))).andExpect(status().isForbidden)
     }
 }

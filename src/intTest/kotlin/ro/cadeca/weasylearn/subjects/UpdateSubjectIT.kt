@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.fail
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -18,7 +17,6 @@ import ro.cadeca.weasylearn.student1
 import ro.cadeca.weasylearn.student2
 import ro.cadeca.weasylearn.teacher1
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UpdateSubjectIT : BaseDataIT() {
 
     private val path = "/api/subject"
@@ -28,7 +26,7 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `get subject and update it to change teacher tutors and students`() {
-        val subjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get(path).param("query", " 1")).andReturn().response.contentAsString)
+        val subjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get("$path/search").param("query", " 1")).andReturn().response.contentAsString)
         assertEquals(1, subjects.size)
         val subject = SubjectSaveDTO(
                 name = subjects.first().name,
@@ -41,7 +39,7 @@ class UpdateSubjectIT : BaseDataIT() {
 
         mockMvc().perform(post(path).contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(subject)))
 
-        val newSubjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get(path).param("query", " 1")).andReturn().response.contentAsString)
+        val newSubjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get("$path/search").param("query", " 1")).andReturn().response.contentAsString)
         val newSubject = newSubjects.first()
 
         assertEquals("code1", newSubject.code)
@@ -57,7 +55,7 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `get subject and update it to change description and add semester`() {
-        val subjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get(path).param("query", " 1")).andReturn().response.contentAsString)
+        val subjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get("$path/search").param("query", " 1")).andReturn().response.contentAsString)
         assertEquals(1, subjects.size)
         val subject = subjects.first().apply {
             description = "new description"
@@ -66,7 +64,7 @@ class UpdateSubjectIT : BaseDataIT() {
 
         mockMvc().perform(post(path).contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(subject)))
 
-        val newSubjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get(path).param("query", " 1")).andReturn().response.contentAsString)
+        val newSubjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get("$path/search").param("query", " 1")).andReturn().response.contentAsString)
         val newSubject = newSubjects.first()
 
         assertEquals("code1", newSubject.code)
@@ -77,11 +75,11 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `add teacher to subject`() {
-        val subjectId = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get(path).param("query", " 1"))
+        val subjectId = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
                 .andReturn().response.contentAsString).first().id
         mockMvc().perform(put("$path/$subjectId/teacher").param("username", "berlin"))
 
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get(path).param("query", " 1"))
+        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
                 .andReturn().response.contentAsString).first()
         assertEquals("berlin.fonollosa@aut.upt.ro", subject.teacher?.email)
     }
@@ -89,12 +87,12 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `add tutors to subject`() {
-        val subjectId = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get(path).param("query", " 1"))
+        val subjectId = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
                 .andReturn().response.contentAsString).first().id
         mockMvc().perform(put("$path/$subjectId/tutor").param("username", "berlin"))
         mockMvc().perform(put("$path/$subjectId/tutor").param("username", "johnDoe"))
 
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get(path).param("query", " 1"))
+        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
                 .andReturn().response.contentAsString).first()
         assertTrue(subject.tutors?.map { it.email }?.containsAll(listOf("berlin.fonollosa@aut.upt.ro", "john.doe@student.upt.ro"))
                 ?: fail("tutors field is nul"))
@@ -103,12 +101,12 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `add students to subject`() {
-        val subjectId = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get(path).param("query", " 1"))
+        val subjectId = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
                 .andReturn().response.contentAsString).first().id
         mockMvc().perform(put("$path/$subjectId/student").param("username", "JohnSnow"))
         mockMvc().perform(put("$path/$subjectId/student").param("username", "johnDoe"))
 
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get(path).param("query", " 1"))
+        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
                 .andReturn().response.contentAsString).first()
         assertTrue(subject.students?.map { it.email }?.containsAll(listOf("john.snow@student.upt.ro", "john.doe@student.upt.ro"))
                 ?: fail("students field is nul"))

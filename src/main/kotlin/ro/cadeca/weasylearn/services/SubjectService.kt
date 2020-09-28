@@ -16,7 +16,8 @@ import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
 class SubjectService(private val subjectRepository: SubjectRepository,
                      private val userService: UserService,
                      private val subjectFromEntityConverter: SubjectFromEntityConverter,
-                     private val subjectEntityFromSaveDtoConverter: SubjectEntityFromSaveDtoConverter) {
+                     private val subjectEntityFromSaveDtoConverter: SubjectEntityFromSaveDtoConverter,
+                     private val authenticationService: AuthenticationService) {
 
     fun search(query: String?): List<Subject> {
         val findAll = query
@@ -78,5 +79,11 @@ class SubjectService(private val subjectRepository: SubjectRepository,
         return subjectRepository.findById(id)
                 .map(subjectFromEntityConverter::convert)
                 .orElseThrow { SubjectNotFoundException(id) }
+    }
+
+    fun getUsersSubjects(): List<Subject> {
+        val username = authenticationService.getKeycloakUser().username
+        return subjectRepository.findAllByTeacherOrTutorsOrStudents(username, username, username)
+                .map(subjectFromEntityConverter::convert)
     }
 }

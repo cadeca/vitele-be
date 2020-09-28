@@ -8,7 +8,6 @@ import ro.cadeca.weasylearn.model.Student
 import ro.cadeca.weasylearn.model.Teacher
 import ro.cadeca.weasylearn.persistence.user.StudyType.Companion.BACHELOR
 import ro.cadeca.weasylearn.persistence.user.UserDocument
-import ro.cadeca.weasylearn.persistence.user.UserRepository
 import ro.cadeca.weasylearn.persistence.user.UserTypes
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
 import ro.cadeca.weasylearn.services.UserService
@@ -18,9 +17,6 @@ class UserServiceIT : BaseDataIT() {
 
     @Autowired
     private lateinit var userService: UserService
-
-    @Autowired
-    private lateinit var userRepository: UserRepository
 
     @Test
     fun `test retrieve student with all details`() {
