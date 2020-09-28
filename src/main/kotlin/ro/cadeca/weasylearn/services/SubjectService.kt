@@ -20,10 +20,10 @@ class SubjectService(private val subjectRepository: SubjectRepository,
                      private val authenticationService: AuthenticationService) {
 
     fun search(query: String?): List<Subject> {
-        val findAll = query
+        return (query
                 ?.let { subjectRepository.findAllByNameContainingOrCodeContaining(it, it) }
-                ?: subjectRepository.findAll()
-        return findAll.map(subjectFromEntityConverter::convert)
+                ?: subjectRepository.findAll())
+                .map(subjectFromEntityConverter::convert)
     }
 
     fun save(subject: SubjectSaveDTO) =

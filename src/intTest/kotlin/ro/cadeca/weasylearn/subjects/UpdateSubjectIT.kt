@@ -11,6 +11,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import ro.cadeca.weasylearn.BaseDataIT
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
+import ro.cadeca.weasylearn.dto.UserDTO
 import ro.cadeca.weasylearn.dto.subjects.SubjectDTO
 import ro.cadeca.weasylearn.dto.subjects.SubjectSaveDTO
 import ro.cadeca.weasylearn.student1
@@ -57,9 +58,17 @@ class UpdateSubjectIT : BaseDataIT() {
     fun `get subject and update it to change description and add semester`() {
         val subjects: List<SubjectDTO> = mapper.readValue(mockMvc().perform(get("$path/search").param("query", " 1")).andReturn().response.contentAsString)
         assertEquals(1, subjects.size)
-        val subject = subjects.first().apply {
-            description = "new description"
-            semester = 2
+        val subject = subjects.first().let {
+            SubjectSaveDTO(
+                    id = it.id,
+                    name = it.name,
+                    code = it.code,
+                    description = "new description",
+                    semester = 2,
+                    teacher = it.teacher?.username,
+                    students = it.students?.map(UserDTO::username),
+                    tutors = it.tutors?.map(UserDTO::username)
+            )
         }
 
         mockMvc().perform(post(path).contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(subject)))
