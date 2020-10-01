@@ -52,7 +52,7 @@ class SubjectService(private val subjectRepository: SubjectRepository,
 
         subjectRepository.findById(id)
                 .map {
-                    it.tutors = it.tutors?.let { it + username } ?: listOf(username)
+                    it.tutors = it.tutors?.let { it + username } ?: setOf(username)
                     it
                 }.map {
                     subjectRepository.save(it)
@@ -67,7 +67,37 @@ class SubjectService(private val subjectRepository: SubjectRepository,
 
         subjectRepository.findById(id)
                 .map {
-                    it.students = it.students?.let { it + username } ?: listOf(username)
+                    it.students = it.students?.let { it + username } ?: setOf(username)
+                    it
+                }.map {
+                    subjectRepository.save(it)
+                }.orElseThrow {
+                    SubjectNotFoundException(id)
+                }
+    }
+
+    fun removeTutor(id: Long, username: String) {
+        if (!userService.exists(username))
+            throw UserNotFoundException(username)
+
+        subjectRepository.findById(id)
+                .map {
+                    it.tutors = it.tutors?.let { it - username } ?: emptySet()
+                    it
+                }.map {
+                    subjectRepository.save(it)
+                }.orElseThrow {
+                    SubjectNotFoundException(id)
+                }
+    }
+
+    fun removeStudent(id: Long, username: String) {
+        if (!userService.isType(username, STUDENT))
+            throw UserIsNotOfNeededTypeException(username, STUDENT)
+
+        subjectRepository.findById(id)
+                .map {
+                    it.students = it.students?.let { it - username } ?: emptySet()
                     it
                 }.map {
                     subjectRepository.save(it)

@@ -17,9 +17,9 @@ class SubjectEntity(
         @Column
         var teacher: String? = null,
         @ElementCollection
-        var tutors: List<String>? = null,
+        var tutors: Set<String>? = null,
         @ElementCollection
-        var students: List<String>? = null,
+        var students: Set<String>? = null,
         @OneToMany
         @JoinColumn
         var schedule: List<SubjectScheduleEntity>? = null

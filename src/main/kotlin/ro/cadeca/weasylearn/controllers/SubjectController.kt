@@ -54,14 +54,26 @@ class SubjectController(
     }
 
     @PutMapping("/{id}/tutor")
-    @RolesAllowed(ADMIN)
+    @RolesAllowed(ADMIN, TEACHER, STUDENT)
     fun addTutor(@PathVariable id: Long, @RequestParam username: String) {
         subjectService.addTutor(id, username)
     }
 
     @PutMapping("/{id}/student")
-    @RolesAllowed(ADMIN)
+    @RolesAllowed(ADMIN, TEACHER, STUDENT)
     fun addStudent(@PathVariable id: Long, @RequestParam username: String) {
         subjectService.addStudent(id, username)
+    }
+
+    @DeleteMapping("/{id}/tutor")
+    @RolesAllowed(ADMIN, TEACHER, STUDENT)
+    fun removeTutor(@PathVariable id: Long, @RequestParam username: String) {
+        subjectService.removeTutor(id, username)
+    }
+
+    @DeleteMapping("/{id}/student")
+    @RolesAllowed(ADMIN, TEACHER, STUDENT)
+    fun removeStudent(@PathVariable id: Long, @RequestParam username: String) {
+        subjectService.removeStudent(id, username)
     }
 }
