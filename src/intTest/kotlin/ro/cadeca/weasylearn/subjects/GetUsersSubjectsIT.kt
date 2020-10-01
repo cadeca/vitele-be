@@ -25,8 +25,8 @@ class GetUsersSubjectsIT : BaseDataIT() {
         subjectRepository.save(subject1.apply { teacher = teacher1.username })
         subjectRepository.save(subject2.apply {
             teacher = teacher2.username
-            tutors = listOf(teacher1.username)
-            students = listOf(student1.username)
+            tutors = setOf(teacher1.username)
+            students = setOf(student1.username)
         })
     }
 
