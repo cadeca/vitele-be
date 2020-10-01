@@ -1,6 +1,7 @@
 package ro.cadeca.weasylearn.services
 
 import org.springframework.stereotype.Service
+import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.converters.subject.SubjectEntityFromSaveDtoConverter
 import ro.cadeca.weasylearn.converters.subject.SubjectFromEntityConverter
 import ro.cadeca.weasylearn.dto.subjects.SubjectSaveDTO
@@ -85,5 +86,17 @@ class SubjectService(private val subjectRepository: SubjectRepository,
         val username = authenticationService.getKeycloakUser().username
         return subjectRepository.findAllByTeacherOrTutorsOrStudents(username, username, username)
                 .map(subjectFromEntityConverter::convert)
+    }
+
+    fun userCanEdit(id: Long): Boolean {
+        val keycloakUser = authenticationService.getKeycloakUser()
+        return if (keycloakUser.roles?.contains(ADMIN) == true) true
+        else {
+            val subject = subjectRepository.findById(id)
+            subject.map {
+                it.teacher?.equals(keycloakUser.username) ?: false ||
+                        it.tutors?.contains(keycloakUser.username) ?: false
+            }.orElseGet { true }
+        }
     }
 }

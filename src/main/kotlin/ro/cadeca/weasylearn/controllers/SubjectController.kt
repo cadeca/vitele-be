@@ -36,6 +36,12 @@ class SubjectController(
         return subjectService.findById(id).let(subjectToDtoConverter::convert)
     }
 
+    @GetMapping("isEditable/{id}")
+    @RolesAllowed
+    fun userCanEdit(@PathVariable id: Long): Boolean {
+        return subjectService.userCanEdit(id)
+    }
+
     @PostMapping
     @RolesAllowed(ADMIN)
     fun save(@RequestBody subject: SubjectSaveDTO) =
