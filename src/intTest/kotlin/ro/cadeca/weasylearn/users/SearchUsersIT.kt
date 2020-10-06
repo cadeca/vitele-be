@@ -3,133 +3,35 @@ package ro.cadeca.weasylearn.users
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import org.junit.ClassRule
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import ro.cadeca.weasylearn.BaseDataIT
+import ro.cadeca.weasylearn.*
 import ro.cadeca.weasylearn.config.Roles
 import ro.cadeca.weasylearn.dto.*
-import ro.cadeca.weasylearn.persistence.user.UserDocument
-import ro.cadeca.weasylearn.persistence.user.UserRepository
-import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
-import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
-import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
-import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 class SearchUsersIT : BaseDataIT() {
 
-    @Autowired
-    private lateinit var mockMvc: MockMvc
+    companion object {
+        @ClassRule
+        val mongo = MyMongoContainer()
+    }
 
     private val path = "/api/user"
 
     private val mapper = jacksonObjectMapper()
 
-    @Autowired
-    private lateinit var userRepository: UserRepository
-
-    val rioBirthDate: Date = Calendar.getInstance().also { it.set(1985, 1, 1) }.time
-    val tokyoBirthDate: Date = Calendar.getInstance().also { it.set(1990, 2, 2) }.time
-    val elProfessorBirthDate: Date = Calendar.getInstance().also { it.set(1987, 4, 20) }.time
-    val berlinBirthDate: Date = Calendar.getInstance().also { it.set(1982, 10, 9) }.time
-    val doeBirthDate: Date = Calendar.getInstance().also { it.set(2000, 6, 10) }.time
-    val snowBirthDate: Date = Calendar.getInstance().also { it.set(1997, 5, 10) }.time
-
-    @BeforeAll
-    fun setup() {
-        val user1 = UserDocument(username = "rioCity",
-                firstName = "Rio",
-                lastName = "City",
-                dateOfBirth = rioBirthDate,
-                email = "rio@gmail.com",
-                type = USER
-        )
-
-        val user2 = UserDocument(username = "tokyo",
-                firstName = "Tokyo Drift",
-                lastName = "City",
-                dateOfBirth = tokyoBirthDate,
-                email = "tokyo@yahoo.com",
-                type = USER
-        )
-
-        val teacher1 = UserDocument(username = "elProfessor",
-                firstName = "Professor",
-                lastName = "Papel",
-                dateOfBirth = elProfessorBirthDate,
-                email = "professor.papel@upt.ro",
-                type = TEACHER,
-                details = mapOf("department" to "CTI",
-                        "titles" to listOf("prof.", "dr.", "ing."),
-                        "eduUser" to "professor.papel",
-                        "githubUser" to "professorPapel"
-                )
-        )
-
-        val teacher2 = UserDocument(username = "berlin",
-                firstName = "Berlin",
-                lastName = "Fonollosa",
-                dateOfBirth = berlinBirthDate,
-                email = "berlin.fonollosa@aut.upt.ro",
-                type = TEACHER,
-                details = mapOf("department" to "AIA",
-                        "titles" to listOf("conf.", "dr.", "ing."),
-                        "eduUser" to "berlin.fonollosa",
-                        "githubUser" to "berlinFonollosa"
-                )
-        )
-
-        val student1 = UserDocument(username = "johnDoe",
-                firstName = "John Albert",
-                lastName = "Doe",
-                dateOfBirth = doeBirthDate,
-                email = "john.doe@student.upt.ro",
-                type = STUDENT,
-                details = mapOf("studyType" to "Bachelor",
-                        "year" to 2,
-                        "group" to "2.1",
-                        "githubUser" to "john_doe",
-                        "facebookUser" to "JohnDoe",
-                        "eduUser" to "john.doe"
-                )
-        )
-
-        val student2 = UserDocument(username = "JohnSnow",
-                firstName = "John",
-                lastName = "Snow",
-                dateOfBirth = snowBirthDate,
-                email = "john.snow@student.upt.ro",
-                type = STUDENT,
-                details = mapOf("studyType" to "Master",
-                        "year" to 1,
-                        "group" to "2.2",
-                        "githubUser" to "john_snow",
-                        "facebookUser" to "JohnSnow",
-                        "eduUser" to "john.snow"
-                )
-        )
-
-        userRepository.save(user1)
-        userRepository.save(user2)
-        userRepository.save(teacher1)
-        userRepository.save(teacher2)
-        userRepository.save(student1)
-        userRepository.save(student2)
-    }
-
 
     @Test
     @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all users`() {
-        val allUsers: List<UserWrapperDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/all")).andReturn().response.contentAsString)
+        val allUsers: List<UserWrapperDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/all")).andReturn().response.contentAsString)
         Assertions.assertNotNull(allUsers)
         assertEquals(6, allUsers.size)
     }
@@ -137,7 +39,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all teachers`() {
-        val allTeachers: List<TeacherDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/teachers")).andReturn().response.contentAsString)
+        val allTeachers: List<TeacherDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/teachers")).andReturn().response.contentAsString)
         Assertions.assertNotNull(allTeachers)
         assertEquals(2, allTeachers.size)
     }
@@ -145,7 +47,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all students`() {
-        val allStudents: List<StudentDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/students")).andReturn().response.contentAsString)
+        val allStudents: List<StudentDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/students")).andReturn().response.contentAsString)
         Assertions.assertNotNull(allStudents)
         assertEquals(2, allStudents.size)
     }
@@ -153,7 +55,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all otherUsers`() {
-        val allOtherUsers: List<UserDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/others")).andReturn().response.contentAsString)
+        val allOtherUsers: List<UserDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/others")).andReturn().response.contentAsString)
         Assertions.assertNotNull(allOtherUsers)
         assertEquals(2, allOtherUsers.size)
     }
@@ -161,7 +63,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `get user by username`() {
-        val wrapper: UserWrapperDTO = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/rioCity")).andReturn().response.contentAsString)
+        val wrapper: UserWrapperDTO = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/rioCity")).andReturn().response.contentAsString)
 
         val user = wrapper.user!!
         assertEquals("rioCity", user.username)
@@ -174,7 +76,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `get teacher by username`() {
-        val wrapper: UserWrapperDTO = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/elProfessor")).andReturn().response.contentAsString)
+        val wrapper: UserWrapperDTO = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/elProfessor")).andReturn().response.contentAsString)
 
         val user = wrapper.user!! as TeacherDTO
         assertEquals("elProfessor", user.username)
@@ -191,7 +93,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `get student by username`() {
-        val wrapper: UserWrapperDTO = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/JohnSnow")).andReturn().response.contentAsString)
+        val wrapper: UserWrapperDTO = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/JohnSnow")).andReturn().response.contentAsString)
 
         val user = wrapper.user!! as StudentDTO
         assertEquals("JohnSnow", user.username)
@@ -210,7 +112,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by username`() {
-        val userList: List<UserSearchDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/search?query=johnsnow")).andReturn().response.contentAsString)
+        val userList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search?query=johnsnow")).andReturn().response.contentAsString)
         Assertions.assertNotNull(userList)
         assertEquals(1, userList.size)
         val user = userList.first()
@@ -227,7 +129,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by firstName`() {
-        val userList: List<UserSearchDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/search").param("query", "John")).andReturn().response.contentAsString)
+        val userList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search").param("query", "John")).andReturn().response.contentAsString)
         Assertions.assertNotNull(userList)
         assertEquals(2, userList.size)
 
@@ -246,7 +148,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by fullName`() {
-        val userList: List<UserSearchDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/search?query=John Albert Doe")).andReturn().response.contentAsString)
+        val userList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search?query=John Albert Doe")).andReturn().response.contentAsString)
         Assertions.assertNotNull(userList)
         assertEquals(1, userList.size)
 
@@ -259,7 +161,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by two firstNames`() {
-        val usersList: List<UserSearchDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/search?query=John Albert")).andReturn().response.contentAsString)
+        val usersList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search?query=John Albert")).andReturn().response.contentAsString)
         Assertions.assertNotNull(usersList)
         assertEquals(1, usersList.size)
 
@@ -272,7 +174,7 @@ class SearchUsersIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by email`() {
-        val usersList: List<UserSearchDTO> = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("$path/search?query=professor.papel@upt.ro")).andReturn().response.contentAsString)
+        val usersList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search?query=professor.papel@upt.ro")).andReturn().response.contentAsString)
         Assertions.assertNotNull(usersList)
         assertEquals(1, usersList.size)
 

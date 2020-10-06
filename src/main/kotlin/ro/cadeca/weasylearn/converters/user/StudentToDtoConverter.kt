@@ -10,7 +10,7 @@ import ro.cadeca.weasylearn.model.Student
 class StudentToDtoConverter(private val mapperService: MapperService)
     : IConverter<Student, StudentDTO> {
 
-    override fun convert(source: Student) =
-            mapperService.map(source, StudentDTO::class)
+    override fun convert(source: Student): StudentDTO =
+            mapperService.map(source)
 
 }

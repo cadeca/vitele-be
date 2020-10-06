@@ -1,10 +1,18 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  data:
+    mongodb:
+      port: ${MONGO_PORT}
+      host: ${MONGO_HOST}
 
 # This is here because keycloak searches for it. Otherwise not needed for IT
 keycloak:
