@@ -18,7 +18,7 @@ class KeycloakAdminService(
         private val clientSecret: String,
         @Value("\${kc.realm}")
         private val realm: String,
-        @Value("\${kc.main.realm}")
+        @Value("\${kc.main}")
         private val mainRealm: String,
         @Value("\${kc.server}")
         private val serverUrl: String,
