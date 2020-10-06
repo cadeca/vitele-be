@@ -9,7 +9,7 @@ import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
 @Converter
 class TeacherModelToDocumentConverter : IConverter<Teacher, UserDocument> {
     override fun convert(source: Teacher) =
-            UserDocument(source.userName, source.firstName, source.lastName, source.dateOfBirth, source.profilePicture, source.email, TEACHER, mapTeacherDetails(source))
+            UserDocument(source.username, source.firstName, source.lastName, source.dateOfBirth, source.profilePicture, source.email, TEACHER, mapTeacherDetails(source))
 
     private fun mapTeacherDetails(teacher: Teacher): Map<String, Any> {
         val map = mutableMapOf<String, Any>()

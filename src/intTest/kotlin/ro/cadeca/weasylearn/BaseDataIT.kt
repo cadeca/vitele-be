@@ -22,17 +22,14 @@ abstract class BaseDataIT {
     @MockBean
     lateinit var keycloakAdminService: KeycloakAdminService
 
-    companion object {
-        val mongo = MongoDBContainer()
-        val postgres = PostgreSQLContainer<Nothing>().apply {
-            withDatabaseName("postgres")
-            withUsername("integrationUser")
-            withPassword("testPass")
-        }
-    }
-
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
+            val mongo = MongoDBContainer()
+            val postgres = PostgreSQLContainer<Nothing>().apply {
+                withDatabaseName("postgres")
+                withUsername("integrationUser")
+                withPassword("testPass")
+            }
             mongo.start()
             postgres.start()
 

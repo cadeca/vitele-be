@@ -9,5 +9,5 @@ import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
 @Converter
 class UserModelToDocumentConverter : IConverter<User, UserDocument> {
     override fun convert(source: User) =
-            UserDocument(source.userName, source.firstName, source.lastName, source.dateOfBirth, source.profilePicture, source.email, USER, emptyMap())
+            UserDocument(source.username, source.firstName, source.lastName, source.dateOfBirth, source.profilePicture, source.email, USER, emptyMap())
 }

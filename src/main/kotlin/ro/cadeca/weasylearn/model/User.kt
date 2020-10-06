@@ -3,10 +3,10 @@ package ro.cadeca.weasylearn.model
 import java.util.*
 
 open class User (
-    var userName: String,
-    var firstName: String? = null,
-    var lastName: String? = null,
-    var dateOfBirth: Date? = null,
-    var profilePicture: ByteArray? = null,
-    var email: String? = null
+        var username: String,
+        var firstName: String? = null,
+        var lastName: String? = null,
+        var dateOfBirth: Date? = null,
+        var profilePicture: ByteArray? = null,
+        var email: String? = null
 )
