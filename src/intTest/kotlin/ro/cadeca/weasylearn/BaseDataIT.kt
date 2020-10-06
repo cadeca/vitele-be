@@ -2,6 +2,7 @@ package ro.cadeca.weasylearn
 
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
@@ -10,12 +11,17 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.containers.PostgreSQLContainer
+import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = [WeasylearnBeApplication::class], initializers = [BaseDataIT.Initializer::class])
 @ActiveProfiles(profiles = ["intTest"])
 abstract class BaseDataIT {
+
+    @MockBean
+    lateinit var keycloakAdminService: KeycloakAdminService
+
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
             val mongo = MongoDBContainer()
