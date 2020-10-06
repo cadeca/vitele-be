@@ -10,7 +10,7 @@ class KeycloakAccessTokenToKeycloakUserConverter : IConverter<AccessToken, Keycl
     override fun convert(source: AccessToken): KeycloakUser {
         return KeycloakUser(
                 source.preferredUsername,
-                source.name, source.givenName,
+                source.givenName,
                 source.familyName,
                 source.email)
     }

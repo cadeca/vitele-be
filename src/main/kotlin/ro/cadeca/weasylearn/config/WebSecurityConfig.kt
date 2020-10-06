@@ -14,9 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @Configuration
@@ -27,9 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class WebSecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         super.configure(http)
-        http.authorizeRequests()
-                .anyRequest()
-                .authenticated()
+        http.authorizeRequests().anyRequest().authenticated()
 
         http.cors()
         http.csrf().disable()

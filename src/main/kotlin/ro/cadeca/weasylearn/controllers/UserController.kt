@@ -1,5 +1,6 @@
 package ro.cadeca.weasylearn.controllers
 
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.converters.UserToSearchDtoConverter
@@ -9,6 +10,7 @@ import ro.cadeca.weasylearn.converters.user.UserToDtoConverter
 import ro.cadeca.weasylearn.converters.user.UserToWrapperDtoConverter
 import ro.cadeca.weasylearn.dto.*
 import ro.cadeca.weasylearn.services.UserService
+import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
 import javax.annotation.security.RolesAllowed
 
 @RestController
@@ -47,5 +49,12 @@ private val userToSearchDtoConverter: UserToSearchDtoConverter) {
     fun findAllStudents(): List<StudentDTO> = userService.findAllStudents().map(studentToDtoConverter::convert)
 
     @GetMapping("profile")
-    fun gerProfile(): UserProfileDTO = userService.getCurrentUserProfile()
+    fun getProfile(): UserProfileDTO = userService.getCurrentUserProfile()
+
+    @PutMapping(value = ["/type"], consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
+    fun setRoleForUser(@RequestBody userType: UserType) {
+        this.userService.convertUserToType(userType.username, userType.type)
+    }
 }
+
+data class UserType(val username: String, val type: String)

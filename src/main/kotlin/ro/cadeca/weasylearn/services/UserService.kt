@@ -12,10 +12,13 @@ import ro.cadeca.weasylearn.persistence.user.UserRepository
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.USER
+import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
+import javax.annotation.PostConstruct
 
 @Service
 class UserService(private val userRepository: UserRepository,
                   private val authenticationService: AuthenticationService,
+                  private val keycloakAdminService: KeycloakAdminService,
                   private val userToUserProfileDtoConverter: UserDocumentToUserProfileDtoConverter,
                   private val keycloakUserToUserDocumentConverter: KeycloakUserToUserDocumentConverter,
                   private val userToUserModelConverter: UserDocumentToUserModelConverter,
@@ -55,9 +58,24 @@ class UserService(private val userRepository: UserRepository,
             userRepository.existsByUsernameAndType(username, type)
 
     protected fun createNewUserFrom(kcUser: KeycloakUser): UserDocument {
-        val newUser = keycloakUserToUserDocumentConverter.convert(kcUser)
+        return keycloakUserToUserDocumentConverter.convert(kcUser)
+                .let { userRepository.save(it) }
+    }
 
-        return userRepository.save(newUser)
+    fun convertUserToType(username: String, type: String) {
+        val userDocument = userRepository.findByUsername(username) ?: throw UserNotFoundException(username)
+        userDocument.type = type
+        userRepository.save(userDocument)
+
+        keycloakAdminService.assignRoleToUser(username, type)
+    }
+
+    @PostConstruct
+    fun syncWithKeycloakUsers() {
+        keycloakAdminService.getAllUsers()
+                .forEach {
+                    userRepository.findByUsername(it.username) ?: userRepository.save(createNewUserFrom(it))
+                }
     }
 
     fun exists(username: String) =

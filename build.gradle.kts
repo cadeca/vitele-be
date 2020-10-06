@@ -46,6 +46,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.keycloak:keycloak-spring-boot-starter")
+    implementation("org.keycloak:keycloak-admin-client:11.0.2")
+
 
     implementation("ma.glasnost.orika:orika-core:1.5.4")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
