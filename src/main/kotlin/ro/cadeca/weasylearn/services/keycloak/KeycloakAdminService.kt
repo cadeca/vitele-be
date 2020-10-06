@@ -98,16 +98,24 @@ class KeycloakAdminService(
         userResource.roles().clientLevel(clientId()).add(listOf(userClientRole))
     }
 
-    fun getAllUsers() =
-            users().list().map {
-                KeycloakUser(
-                        username = it.username,
-                        firstName = it.firstName,
-                        lastName = it.lastName,
-                        email = it.email,
-                        roles = getRoles(it)
-                )
-            }
+    fun getAllUsers(): List<KeycloakUser> {
+        val count = users().count()
+
+        val userReps: MutableList<UserRepresentation> = mutableListOf()
+        for(i in 0..(count/100)) {
+            userReps += users().list(i*100+1, 100)
+        }
+
+        return userReps.map {
+            KeycloakUser(
+                    username = it.username,
+                    firstName = it.firstName,
+                    lastName = it.lastName,
+                    email = it.email,
+                    roles = getRoles(it)
+            )
+        }
+    }
 
     private fun getRoles(it: UserRepresentation): List<String> {
         return user(it.id).roles().clientLevel(clientId()).listEffective().map { it.name }
