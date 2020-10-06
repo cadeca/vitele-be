@@ -12,17 +12,17 @@ import ro.cadeca.weasylearn.model.KeycloakUser
 
 @Service
 class KeycloakAdminService(
-        @Value("\${keycloak.client.id}")
+        @Value("\${kc.client.id}")
         private val clientId: String,
-        @Value("\${keycloak.client.secret}")
+        @Value("\${kc.client.secret}")
         private val clientSecret: String,
-        @Value("\${keycloak.realm}")
+        @Value("\${kc.realm}")
         private val realm: String,
-        @Value("\${keycloak.main.realm}")
+        @Value("\${kc.main.realm}")
         private val mainRealm: String,
-        @Value("\${keycloak.server.url}")
+        @Value("\${kc.server.url}")
         private val serverUrl: String,
-        @Value("\${keycloak.be.client.id}")
+        @Value("\${kc.be.client.id}")
         private val beClientId: String,
 
         private val passwordGenerator: PasswordGenerator

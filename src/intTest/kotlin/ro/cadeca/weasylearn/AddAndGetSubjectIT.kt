@@ -18,7 +18,7 @@ import ro.cadeca.weasylearn.config.Roles.Companion.TEACHER
 import ro.cadeca.weasylearn.model.Subject
 
 @AutoConfigureMockMvc
-class AddAndGetSubjectIT : PostgresIT() {
+class AddAndGetSubjectIT : BaseDataIT() {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
