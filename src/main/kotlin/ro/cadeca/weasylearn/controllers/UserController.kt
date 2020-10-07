@@ -10,7 +10,6 @@ import ro.cadeca.weasylearn.converters.user.UserToDtoConverter
 import ro.cadeca.weasylearn.converters.user.UserToWrapperDtoConverter
 import ro.cadeca.weasylearn.dto.*
 import ro.cadeca.weasylearn.services.UserService
-import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
 import javax.annotation.security.RolesAllowed
 
 @RestController
@@ -28,8 +27,8 @@ private val userToSearchDtoConverter: UserToSearchDtoConverter) {
     }
 
     @GetMapping("search")
-    fun findByQuery(@RequestParam("query") query: String): List<UserSearchDTO> {
-        return userService.findAllByNameQuery(query).map(userToSearchDtoConverter::convert)
+    fun findByQuery(@RequestParam("query") query: String, @RequestParam(required = false) type: String?): List<UserSearchDTO> {
+        return userService.findAllByNameQuery(query, type).map(userToSearchDtoConverter::convert)
     }
 
     @GetMapping("all")
