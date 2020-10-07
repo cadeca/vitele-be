@@ -36,8 +36,11 @@ class UserService(private val userRepository: UserRepository,
     fun findAllUsers(): List<User> = userRepository.findAll()
             .map { userDocumentToModelConverterFactory.getDocumentToModelConverter(it.type).convert(it) }
 
-    fun findAllByNameQuery(query: String): List<User> {
-        return userRepository.findByFullNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query, query)
+    fun findAllByNameQuery(query: String, type: String?): List<User> {
+        return (type?.let {
+            userRepository.findByQueryAndType(query, it)
+        }
+                ?: userRepository.findByFullNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query, query))
                 .map { userDocumentToModelConverterFactory.getDocumentToModelConverter(it.type).convert(it) }
     }
 
