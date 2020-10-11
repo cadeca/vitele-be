@@ -16,7 +16,7 @@ class UserDocument(
 
         var dateOfBirth: Date? = null,
 
-        var profilePicture: ByteArray? = null,
+        var profilePicture: Long? = null,
 
         var email: String? = null,
 

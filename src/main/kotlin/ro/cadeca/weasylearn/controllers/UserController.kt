@@ -2,6 +2,7 @@ package ro.cadeca.weasylearn.controllers
 
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.converters.UserToSearchDtoConverter
 import ro.cadeca.weasylearn.converters.user.StudentToDtoConverter
@@ -19,7 +20,7 @@ class UserController(private val userService: UserService,
                      private val studentToDtoConverter: StudentToDtoConverter,
                      private val teacherToDtoConverter: TeacherToDtoConverter,
                      private val userToWrapperDtoConverter: UserToWrapperDtoConverter,
-private val userToSearchDtoConverter: UserToSearchDtoConverter) {
+                     private val userToSearchDtoConverter: UserToSearchDtoConverter) {
 
     @GetMapping("{username}")
     fun findUserByUsername(@PathVariable username: String): UserWrapperDTO {
@@ -50,10 +51,17 @@ private val userToSearchDtoConverter: UserToSearchDtoConverter) {
     @GetMapping("profile")
     fun getProfile(): UserProfileDTO = userService.getCurrentUserProfile()
 
+    @PostMapping("profile/image")
+    fun uploadProfileImage(@RequestParam("file") file: MultipartFile) = userService.saveProfilePicture(file)
+
+    @GetMapping("profile/image", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+    fun serveProfileImage() = userService.getProfilePicture()
+
     @PutMapping(value = ["/type"], consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     fun setRoleForUser(@RequestBody userType: UserType) {
         this.userService.convertUserToType(userType.username, userType.type)
     }
+
+    data class UserType(val username: String, val type: String)
 }
 
-data class UserType(val username: String, val type: String)

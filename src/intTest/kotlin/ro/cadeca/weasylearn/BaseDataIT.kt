@@ -1,5 +1,6 @@
 package ro.cadeca.weasylearn
 
+import com.c4_soft.springaddons.security.oauth2.test.mockmvc.keycloak.KeycloakAuthRequestPostProcessor
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.keycloak.ServletKeycloakAuthUnitTestingSupport
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
@@ -7,7 +8,6 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
@@ -20,7 +20,6 @@ import org.testcontainers.containers.PostgreSQLContainer
 import ro.cadeca.weasylearn.config.KeycloakConfig
 import ro.cadeca.weasylearn.persistence.subject.SubjectRepository
 import ro.cadeca.weasylearn.persistence.user.UserRepository
-import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,8 +29,6 @@ import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class BaseDataIT : ServletKeycloakAuthUnitTestingSupport() {
-    @MockBean
-    lateinit var keycloakAdminService: KeycloakAdminService
 
     @Autowired
     protected lateinit var userRepository: UserRepository
@@ -65,4 +62,9 @@ abstract class BaseDataIT : ServletKeycloakAuthUnitTestingSupport() {
         populateUsers(userRepository)
         populateSubjects(subjectRepository)
     }
+
+    protected fun mockAuth(username: String, authority: String): KeycloakAuthRequestPostProcessor =
+            keycloakAuthenticationToken()
+                    .accessToken { it.preferredUsername = username }
+                    .authorities(authority)
 }
