@@ -2,7 +2,7 @@ package ro.cadeca.weasylearn.model
 
 import java.util.*
 
-open class User (
+open class User(
         var username: String,
         var firstName: String? = null,
         var lastName: String? = null,

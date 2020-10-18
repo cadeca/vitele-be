@@ -58,9 +58,4 @@ class GetUsersSubjectsIT : BaseDataIT() {
         assertEquals(1, subjects.size)
         assertEquals(code, subjects.first().code)
     }
-
-    private fun mockAuth(username: String, authority: String) =
-            keycloakAuthenticationToken()
-                    .accessToken { it.preferredUsername = username }
-                    .authorities(authority)
 }

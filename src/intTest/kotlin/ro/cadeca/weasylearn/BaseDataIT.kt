@@ -1,5 +1,6 @@
 package ro.cadeca.weasylearn
 
+import com.c4_soft.springaddons.security.oauth2.test.mockmvc.keycloak.KeycloakAuthRequestPostProcessor
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.keycloak.ServletKeycloakAuthUnitTestingSupport
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
@@ -30,14 +31,15 @@ import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class BaseDataIT : ServletKeycloakAuthUnitTestingSupport() {
-    @MockBean
-    lateinit var keycloakAdminService: KeycloakAdminService
 
     @Autowired
     protected lateinit var userRepository: UserRepository
 
     @Autowired
     protected lateinit var subjectRepository: SubjectRepository
+
+    @MockBean
+    private lateinit var keycloakAdminService: KeycloakAdminService
 
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
@@ -65,4 +67,9 @@ abstract class BaseDataIT : ServletKeycloakAuthUnitTestingSupport() {
         populateUsers(userRepository)
         populateSubjects(subjectRepository)
     }
+
+    protected fun mockAuth(username: String, authority: String): KeycloakAuthRequestPostProcessor =
+            keycloakAuthenticationToken()
+                    .accessToken { it.preferredUsername = username }
+                    .authorities(authority)
 }

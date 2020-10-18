@@ -1,9 +1,11 @@
 package ro.cadeca.weasylearn.services
 
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import ro.cadeca.weasylearn.converters.factory.UserDocumentToModelConverterFactory
 import ro.cadeca.weasylearn.converters.user.*
-import ro.cadeca.weasylearn.dto.UserProfileDTO
 import ro.cadeca.weasylearn.exceptions.user.UserNotFoundException
 import ro.cadeca.weasylearn.model.KeycloakUser
 import ro.cadeca.weasylearn.model.User
@@ -50,20 +52,11 @@ class UserService(private val userRepository: UserRepository,
                 ?: throw UserNotFoundException(username)
     }
 
-    fun getCurrentUserProfile(): UserProfileDTO {
-        val keycloakUser = authenticationService.getKeycloakUser()
-        val user = userRepository.findByUsername(keycloakUser.username) ?: createNewUserFrom(keycloakUser)
-
-        return userToUserProfileDtoConverter.convert(user)
-    }
+    fun getCurrentUserProfile() =
+            userToUserProfileDtoConverter.convert(getCurrentUser())
 
     fun isType(username: String, type: String) =
             userRepository.existsByUsernameAndType(username, type)
-
-    protected fun createNewUserFrom(kcUser: KeycloakUser): UserDocument {
-        return keycloakUserToUserDocumentConverter.convert(kcUser)
-                .let { userRepository.save(it) }
-    }
 
     fun convertUserToType(username: String, type: String) {
         val userDocument = userRepository.findByUsername(username) ?: throw UserNotFoundException(username)
@@ -74,13 +67,31 @@ class UserService(private val userRepository: UserRepository,
     }
 
     @PostConstruct
-    fun syncWithKeycloakUsers() {
-        keycloakAdminService.getAllUsers()
-                .forEach {
-                    userRepository.findByUsername(it.username) ?: userRepository.save(createNewUserFrom(it))
-                }
-    }
+    fun syncWithKeycloakUsers() =
+            keycloakAdminService.getAllUsers()
+                    .forEach {
+                        userRepository.findByUsername(it.username) ?: userRepository.save(createNewUserFrom(it))
+                    }
 
     fun exists(username: String) =
             userRepository.existsByUsername(username)
+
+    fun saveProfilePicture(file: MultipartFile) {
+        getCurrentUser().apply {
+            profilePicture = file.bytes
+        }.let(userRepository::save)
+    }
+
+    fun getProfilePicture(): Resource {
+        return ByteArrayResource((getCurrentUser().profilePicture ?: ByteArray(0)))
+    }
+
+    private fun getCurrentUser(): UserDocument {
+        val keycloakUser = authenticationService.getKeycloakUser()
+        return userRepository.findByUsername(keycloakUser.username) ?: createNewUserFrom(keycloakUser)
+    }
+
+    private fun createNewUserFrom(kcUser: KeycloakUser) =
+            keycloakUserToUserDocumentConverter.convert(kcUser)
+                    .let(userRepository::save)
 }

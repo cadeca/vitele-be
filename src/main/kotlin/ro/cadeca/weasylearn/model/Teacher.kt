@@ -2,7 +2,7 @@ package ro.cadeca.weasylearn.model
 
 import java.util.*
 
-class Teacher (
+class Teacher(
         username: String,
         firstName: String? = null,
         lastName: String? = null,
