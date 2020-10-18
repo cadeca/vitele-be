@@ -7,7 +7,7 @@ class Student(
         firstName: String? = null,
         lastName: String? = null,
         dateOfBirth: Date? = null,
-        profilePicture: Long? = null,
+        profilePicture: ByteArray? = null,
         email: String? = null,
         var studyType: String? = null,
         var year: Int? = null,

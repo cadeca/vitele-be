@@ -9,8 +9,6 @@ import ro.cadeca.weasylearn.converters.user.*
 import ro.cadeca.weasylearn.exceptions.user.UserNotFoundException
 import ro.cadeca.weasylearn.model.KeycloakUser
 import ro.cadeca.weasylearn.model.User
-import ro.cadeca.weasylearn.persistence.files.FileEntity
-import ro.cadeca.weasylearn.persistence.files.FileRepository
 import ro.cadeca.weasylearn.persistence.user.UserDocument
 import ro.cadeca.weasylearn.persistence.user.UserRepository
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
@@ -28,8 +26,7 @@ class UserService(private val userRepository: UserRepository,
                   private val userToUserModelConverter: UserDocumentToUserModelConverter,
                   private val userToStudentModelConverter: UserDocumentToStudentModelConverter,
                   private val userToTeacherModelConverter: UserDocumentToTeacherModelConverter,
-                  private val userDocumentToModelConverterFactory: UserDocumentToModelConverterFactory,
-                  private val fileRepository: FileRepository) {
+                  private val userDocumentToModelConverterFactory: UserDocumentToModelConverterFactory) {
 
     fun findAllStudents() = userRepository.findByType(STUDENT).map(userToStudentModelConverter::convert)
 
@@ -80,18 +77,13 @@ class UserService(private val userRepository: UserRepository,
             userRepository.existsByUsername(username)
 
     fun saveProfilePicture(file: MultipartFile) {
-        val save = fileRepository.save(FileEntity(file.name, file.contentType, file.bytes, file.size))
-        val currentUser = getCurrentUser()
-        currentUser.profilePicture = save.id
-        userRepository.save(currentUser)
+        getCurrentUser().apply {
+            profilePicture = file.bytes
+        }.let(userRepository::save)
     }
 
     fun getProfilePicture(): Resource {
-        return (getCurrentUser().profilePicture
-                ?.let(fileRepository::findById)
-                ?.let { it.map(FileEntity::content) }
-                ?.orElseGet { ByteArray(0) } ?: ByteArray(0))
-                .let { ByteArrayResource(it) }
+        return ByteArrayResource((getCurrentUser().profilePicture ?: ByteArray(0)))
     }
 
     private fun getCurrentUser(): UserDocument {

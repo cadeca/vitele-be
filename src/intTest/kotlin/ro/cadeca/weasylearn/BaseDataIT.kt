@@ -8,6 +8,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
@@ -20,6 +21,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 import ro.cadeca.weasylearn.config.KeycloakConfig
 import ro.cadeca.weasylearn.persistence.subject.SubjectRepository
 import ro.cadeca.weasylearn.persistence.user.UserRepository
+import ro.cadeca.weasylearn.services.keycloak.KeycloakAdminService
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,6 +37,9 @@ abstract class BaseDataIT : ServletKeycloakAuthUnitTestingSupport() {
 
     @Autowired
     protected lateinit var subjectRepository: SubjectRepository
+
+    @MockBean
+    private lateinit var keycloakAdminService: KeycloakAdminService
 
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {

@@ -7,7 +7,7 @@ class Teacher(
         firstName: String? = null,
         lastName: String? = null,
         dateOfBirth: Date? = null,
-        profilePicture: Long? = null,
+        profilePicture: ByteArray? = null,
         email: String? = null,
         var department: String? = null,
         var titles: List<String>? = null,

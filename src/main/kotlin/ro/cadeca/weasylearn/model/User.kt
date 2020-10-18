@@ -7,6 +7,6 @@ open class User(
         var firstName: String? = null,
         var lastName: String? = null,
         var dateOfBirth: Date? = null,
-        var profilePicture: Long? = null,
+        var profilePicture: ByteArray? = null,
         var email: String? = null
 )
