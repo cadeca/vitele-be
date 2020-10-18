@@ -53,8 +53,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.junit.jupiter:junit-jupiter:5.4.2")
-    implementation("org.junit.jupiter:junit-jupiter:5.4.2")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -73,10 +71,11 @@ dependencies {
     intTestImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    intTestImplementation("org.testcontainers:junit-jupiter")
-    intTestImplementation("org.testcontainers:postgresql")
-    intTestImplementation("org.testcontainers:mongodb:1.14.3")
-    intTestImplementation("org.testcontainers:testcontainers")
+    intTestImplementation("org.testcontainers:junit-jupiter:1.15.0-rc2")
+    intTestImplementation("org.testcontainers:postgresql:1.15.0-rc2")
+    intTestImplementation("org.testcontainers:mongodb:1.15.0-rc2")
+    intTestImplementation("org.testcontainers:testcontainers:1.15.0-rc2")
+    intTestImplementation("org.testcontainers:jdbc:1.15.0-rc2")
     intTestImplementation("com.c4-soft.springaddons:spring-security-oauth2-test-webmvc-addons:2.3.4")
 
     intTestRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")

@@ -3,25 +3,22 @@ package ro.cadeca.weasylearn.users
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import org.junit.ClassRule
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import ro.cadeca.weasylearn.*
+import ro.cadeca.weasylearn.BaseDataIT
 import ro.cadeca.weasylearn.config.Roles
 import ro.cadeca.weasylearn.dto.*
+import ro.cadeca.weasylearn.elProfessorBirthDate
+import ro.cadeca.weasylearn.rioBirthDate
+import ro.cadeca.weasylearn.snowBirthDate
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 class SearchUsersIT : BaseDataIT() {
-
-    companion object {
-        @ClassRule
-        val mongo = MyMongoContainer()
-    }
 
     private val path = "/api/user"
 
