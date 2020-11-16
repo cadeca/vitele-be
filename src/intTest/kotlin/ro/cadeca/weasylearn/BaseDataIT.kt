@@ -2,6 +2,7 @@ package ro.cadeca.weasylearn
 
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.keycloak.KeycloakAuthRequestPostProcessor
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.keycloak.ServletKeycloakAuthUnitTestingSupport
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import org.junit.runner.RunWith
@@ -66,6 +67,12 @@ abstract class BaseDataIT : ServletKeycloakAuthUnitTestingSupport() {
     fun populate() {
         populateUsers(userRepository)
         populateSubjects(subjectRepository)
+    }
+
+    @AfterAll
+    fun clearDatabase() {
+        userRepository.deleteAll()
+        subjectRepository.deleteAll()
     }
 
     protected fun mockAuth(username: String, authority: String): KeycloakAuthRequestPostProcessor =
