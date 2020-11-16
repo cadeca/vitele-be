@@ -84,7 +84,7 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
-        mavenBom("org.keycloak.bom:keycloak-adapter-bom:10.0.2")
+        mavenBom("org.keycloak.bom:keycloak-adapter-bom:11.0.2")
     }
 }
 
