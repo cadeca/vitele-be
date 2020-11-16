@@ -45,13 +45,6 @@ class UptUserTypeSelectorTest {
     }
 
     @Test
-    fun `test user with roles null`() {
-        val kcUser = KeycloakUser(username = "testUser", roles = null)
-
-        assertEquals(USER, uptUserTypeSelector.selectType(kcUser))
-    }
-
-    @Test
     fun `test user with roles something else`() {
         val kcUser = KeycloakUser(username = "testUser", roles = listOf(""))
 
@@ -82,13 +75,6 @@ class UptUserTypeSelectorTest {
     @Test
     fun `test user with roles empty, username emtpy`() {
         val kcUser = KeycloakUser(username = "", roles = emptyList())
-
-        assertEquals(USER, uptUserTypeSelector.selectType(kcUser))
-    }
-
-    @Test
-    fun `test user with roles null, username empty`() {
-        val kcUser = KeycloakUser(username = "", roles = null)
 
         assertEquals(USER, uptUserTypeSelector.selectType(kcUser))
     }

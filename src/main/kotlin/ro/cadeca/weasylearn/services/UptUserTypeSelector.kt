@@ -14,7 +14,7 @@ class UptUserTypeSelector : UserTypeSelector {
 
     override fun selectType(kcUser: KeycloakUser): String {
         val roles = kcUser.roles
-        if (!roles.isNullOrEmpty()) {
+        if (roles.isNotEmpty()) {
             if (roles.contains(STUDENT))
                 return UserTypes.STUDENT
             else if (roles.contains(TEACHER))
