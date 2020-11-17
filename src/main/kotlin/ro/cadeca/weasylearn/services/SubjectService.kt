@@ -12,6 +12,7 @@ import ro.cadeca.weasylearn.model.Subject
 import ro.cadeca.weasylearn.persistence.subject.SubjectRepository
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
+import javax.transaction.Transactional
 
 @Service
 class SubjectService(private val subjectRepository: SubjectRepository,
@@ -106,6 +107,7 @@ class SubjectService(private val subjectRepository: SubjectRepository,
                 }
     }
 
+    @Transactional
     fun findById(id: Long): Subject {
         return subjectRepository.findById(id)
                 .map(subjectFromEntityConverter::convert)
