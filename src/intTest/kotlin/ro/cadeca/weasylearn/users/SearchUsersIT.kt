@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import ro.cadeca.weasylearn.BaseDataIT
 import ro.cadeca.weasylearn.config.Roles
@@ -31,6 +32,19 @@ class SearchUsersIT : BaseDataIT() {
         val allUsers: List<UserWrapperDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/all")).andReturn().response.contentAsString)
         Assertions.assertNotNull(allUsers)
         assertEquals(6, allUsers.size)
+    }
+
+    @Test
+    @WithMockKeycloakAuth(Roles.TEACHER, Roles.STUDENT)
+    fun `not allowed roles`() {
+        var result: MvcResult = mockMvc().perform(MockMvcRequestBuilders.get("$path/all")).andReturn()
+        assertEquals(403, result.response.status, "Cannot get all users as teacher or as student")
+        result = mockMvc().perform(MockMvcRequestBuilders.get("$path/teachers")).andReturn()
+        assertEquals(403, result.response.status, "Cannot get all teachers as teacher or as student")
+        result = mockMvc().perform(MockMvcRequestBuilders.get("$path/students")).andReturn()
+        assertEquals(403, result.response.status, "Cannot get all students as teacher or as student")
+        result = mockMvc().perform(MockMvcRequestBuilders.get("$path/others")).andReturn()
+        assertEquals(403, result.response.status, "Cannot get all other users as teacher or as student")
     }
 
     @Test
