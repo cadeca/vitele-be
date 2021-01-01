@@ -76,4 +76,11 @@ class SubjectController(
     fun removeStudent(@PathVariable id: Long, @RequestParam username: String) {
         subjectService.removeStudent(id, username)
     }
+
+    @PatchMapping
+    @RolesAllowed(ADMIN)
+    fun update(@RequestBody subject: SubjectSaveDTO) {
+        subjectService.updateSubjectNoStudentsOrScheduleOrTutors(subject)
+    }
+
 }

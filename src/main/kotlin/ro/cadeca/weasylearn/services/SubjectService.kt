@@ -9,6 +9,7 @@ import ro.cadeca.weasylearn.exceptions.subject.SubjectNotFoundException
 import ro.cadeca.weasylearn.exceptions.user.UserIsNotOfNeededTypeException
 import ro.cadeca.weasylearn.exceptions.user.UserNotFoundException
 import ro.cadeca.weasylearn.model.Subject
+import ro.cadeca.weasylearn.persistence.subject.SubjectEntity
 import ro.cadeca.weasylearn.persistence.subject.SubjectRepository
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
@@ -115,9 +116,16 @@ class SubjectService(private val subjectRepository: SubjectRepository,
     }
 
     fun getUsersSubjects(): List<Subject> {
-        val username = authenticationService.getKeycloakUser().username
-        return subjectRepository.findAllByTeacherOrTutorsOrStudents(username, username, username)
-                .map(subjectFromEntityConverter::convert)
+        val user = authenticationService.getKeycloakUser()
+        val username = user.username
+        return if (user.roles.contains("Admin")) {
+            subjectRepository.findAll()
+                    .map(subjectFromEntityConverter::convert)
+        }
+        else {
+            subjectRepository.findAllByTeacherOrTutorsOrStudents(username, username, username)
+                    .map(subjectFromEntityConverter::convert)
+        }
     }
 
     fun userCanEdit(id: Long): Boolean {
@@ -129,6 +137,22 @@ class SubjectService(private val subjectRepository: SubjectRepository,
                 it.teacher?.equals(keycloakUser.username) ?: false ||
                         it.tutors?.contains(keycloakUser.username) ?: false
             }.orElseGet { true }
+        }
+    }
+
+    fun updateSubjectNoStudentsOrScheduleOrTutors(subject: SubjectSaveDTO) : SubjectEntity {
+        val existentSubject = subject.id?.let { subjectRepository.findById(it) }
+        return if (existentSubject != null) {
+            existentSubject.map {
+                it.code = subject.code
+                it.description = subject.description
+                it.teacher = subject.teacher
+                it.name = subject.name
+                it.semester = subject.semester
+                subjectRepository.save(it)
+            }.orElseGet { this.save(subject) }
+        } else {
+            this.save(subject)
         }
     }
 }
