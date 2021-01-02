@@ -9,14 +9,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import ro.cadeca.weasylearn.BaseDataIT
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import ro.cadeca.weasylearn.*
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.dto.UserDTO
 import ro.cadeca.weasylearn.dto.subjects.SubjectDTO
 import ro.cadeca.weasylearn.dto.subjects.SubjectSaveDTO
-import ro.cadeca.weasylearn.student1
-import ro.cadeca.weasylearn.student2
-import ro.cadeca.weasylearn.teacher1
 
 class UpdateSubjectIT : BaseDataIT() {
 
@@ -119,5 +117,48 @@ class UpdateSubjectIT : BaseDataIT() {
                 .andReturn().response.contentAsString).first()
         assertTrue(subject.students?.map { it.email }?.containsAll(listOf("john.snow@student.upt.ro", "john.doe@student.upt.ro"))
                 ?: fail("students field is nul"))
+    }
+
+    @Test
+    @WithMockKeycloakAuth(ADMIN)
+    fun `remove tutors from subject`() {
+        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
+                .andReturn().response.contentAsString).first()
+        val subjectId = subject.id
+        mockMvc().perform(delete("$path/$subjectId/tutor").param("username", teacher2.username))
+        val subjectAfter = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
+                .andReturn().response.contentAsString).first()
+        assertEquals(arrayListOf(user1.username), subjectAfter.tutors?.map { it.username })
+    }
+
+    @Test
+    @WithMockKeycloakAuth(ADMIN)
+    fun `remove invalid tutor from subject`() {
+        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
+                .andReturn().response.contentAsString).first()
+        val subjectId = subject.id
+        mockMvc().perform(delete("$path/$subjectId/tutor").param("username", "invalid")).andExpect(status().is4xxClientError)
+    }
+
+    @Test
+    @WithMockKeycloakAuth(ADMIN)
+    fun `remove students from subject`() {
+        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
+                .andReturn().response.contentAsString).first()
+        val subjectId = subject.id
+        mockMvc().perform(delete("$path/$subjectId/student").param("username", student2.username))
+        val subjectAfter = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
+                .andReturn().response.contentAsString).first()
+        assertEquals(arrayListOf(student1.username), subjectAfter.students?.map { it.username })
+    }
+
+
+    @Test
+    @WithMockKeycloakAuth(ADMIN)
+    fun `remove invalid student from subject`() {
+        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
+                .andReturn().response.contentAsString).first()
+        val subjectId = subject.id
+        mockMvc().perform(delete("$path/$subjectId/student").param("username", "invalid"))
     }
 }

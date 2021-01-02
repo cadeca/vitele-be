@@ -98,8 +98,10 @@ fun populateUsers(userRepository: UserRepository) {
 
 val subject1 = SubjectEntity("subj 1 e2", "code1", "description1", 1)
 val subject2 = SubjectEntity("subj2", "code2")
+val subject3 = SubjectEntity("subj3 3 e3", "code2", "desc3", 1, teacher1.username, setOf(user1.username, teacher2.username), setOf(student1.username, student2.username))
 
 fun populateSubjects(subjectRepository: SubjectRepository) {
     subjectRepository.save(subject1)
     subjectRepository.save(subject2)
+    subjectRepository.save(subject3)
 }
