@@ -8,9 +8,12 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.MvcResult
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import ro.cadeca.weasylearn.*
+import ro.cadeca.weasylearn.config.Roles
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.dto.UserDTO
 import ro.cadeca.weasylearn.dto.subjects.SubjectDTO
@@ -160,5 +163,16 @@ class UpdateSubjectIT : BaseDataIT() {
                 .andReturn().response.contentAsString).first()
         val subjectId = subject.id
         mockMvc().perform(delete("$path/$subjectId/student").param("username", "invalid"))
+    }
+
+    @Test
+    @WithMockKeycloakAuth(Roles.STUDENT)
+    fun `not allowed roles`() {
+        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
+                .andReturn().response.contentAsString).first()
+        val subjectId = subject.id
+
+        var result = mockMvc().perform(delete("$path/$subjectId/student").param("username", student2.username)).andReturn()
+        assertEquals(403, result.response.status, "Cannot delete student from subject as teacher or as student")
     }
 }
