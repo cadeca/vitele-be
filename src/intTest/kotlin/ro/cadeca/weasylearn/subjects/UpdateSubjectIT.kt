@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MvcResult
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import ro.cadeca.weasylearn.*
@@ -85,25 +83,21 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `add teacher to subject`() {
-        val subjectId = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
-                .andReturn().response.contentAsString).first().id
+        val subjectId = getFirstSubject(" 1").id
         mockMvc().perform(put("$path/$subjectId/teacher").param("username", "berlin"))
 
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
-                .andReturn().response.contentAsString).first()
+        val subject = getFirstSubject(" 1")
         assertEquals("berlin.fonollosa@aut.upt.ro", subject.teacher?.email)
     }
 
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `add tutors to subject`() {
-        val subjectId = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
-                .andReturn().response.contentAsString).first().id
+        val subjectId = getFirstSubject(" 1").id
         mockMvc().perform(put("$path/$subjectId/tutor").param("username", "berlin"))
         mockMvc().perform(put("$path/$subjectId/tutor").param("username", "johnDoe"))
 
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
-                .andReturn().response.contentAsString).first()
+        val subject = getFirstSubject(" 1")
         assertTrue(subject.tutors?.map { it.email }?.containsAll(listOf("berlin.fonollosa@aut.upt.ro", "john.doe@student.upt.ro"))
                 ?: fail("tutors field is nul"))
     }
@@ -111,13 +105,11 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `add students to subject`() {
-        val subjectId = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
-                .andReturn().response.contentAsString).first().id
+        val subjectId = getFirstSubject(" 1").id
         mockMvc().perform(put("$path/$subjectId/student").param("username", "JohnSnow"))
         mockMvc().perform(put("$path/$subjectId/student").param("username", "johnDoe"))
 
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 1"))
-                .andReturn().response.contentAsString).first()
+        val subject = getFirstSubject(" 1")
         assertTrue(subject.students?.map { it.email }?.containsAll(listOf("john.snow@student.upt.ro", "john.doe@student.upt.ro"))
                 ?: fail("students field is nul"))
     }
@@ -125,20 +117,25 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `remove tutors from subject`() {
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
-                .andReturn().response.contentAsString).first()
+        val subject = getFirstSubject(" 3")
         val subjectId = subject.id
         mockMvc().perform(delete("$path/$subjectId/tutor").param("username", teacher2.username))
-        val subjectAfter = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
-                .andReturn().response.contentAsString).first()
+        val subjectAfter = getFirstSubject(" 3")
         assertEquals(arrayListOf(user1.username), subjectAfter.tutors?.map { it.username })
+    }
+
+    private fun getFirstSubject(query: String): SubjectDTO {
+        return mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", query))
+                                                           .andReturn()
+                                                           .response
+                                                           .contentAsString)
+                     .first()
     }
 
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `remove invalid tutor from subject`() {
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
-                .andReturn().response.contentAsString).first()
+        val subject = getFirstSubject(" 3")
         val subjectId = subject.id
         mockMvc().perform(delete("$path/$subjectId/tutor").param("username", "invalid")).andExpect(status().is4xxClientError)
     }
@@ -146,12 +143,10 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `remove students from subject`() {
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
-                .andReturn().response.contentAsString).first()
+        val subject = getFirstSubject(" 3")
         val subjectId = subject.id
         mockMvc().perform(delete("$path/$subjectId/student").param("username", student2.username))
-        val subjectAfter = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
-                .andReturn().response.contentAsString).first()
+        val subjectAfter = getFirstSubject(" 3")
         assertEquals(arrayListOf(student1.username), subjectAfter.students?.map { it.username })
     }
 
@@ -159,8 +154,7 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(ADMIN)
     fun `remove invalid student from subject`() {
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
-                .andReturn().response.contentAsString).first()
+        val subject = getFirstSubject(" 3")
         val subjectId = subject.id
         mockMvc().perform(delete("$path/$subjectId/student").param("username", "invalid"))
     }
@@ -168,11 +162,10 @@ class UpdateSubjectIT : BaseDataIT() {
     @Test
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `not allowed roles`() {
-        val subject = mapper.readValue<List<SubjectDTO>>(mockMvc().perform(get("$path/search").param("query", " 3"))
-                .andReturn().response.contentAsString).first()
+        val subject = getFirstSubject(" 3")
         val subjectId = subject.id
 
-        var result = mockMvc().perform(delete("$path/$subjectId/student").param("username", student2.username)).andReturn()
+        val result = mockMvc().perform(delete("$path/$subjectId/student").param("username", student2.username)).andReturn()
         assertEquals(403, result.response.status, "Cannot delete student from subject as teacher or as student")
     }
 }

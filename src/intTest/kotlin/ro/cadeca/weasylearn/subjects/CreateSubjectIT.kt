@@ -33,9 +33,11 @@ class CreateSubjectIT : BaseDataIT() {
         val s = SubjectSaveDTO("Test", "42", "Test", 2, teacher1.username, listOfTutors, listOfStudents)
         val subject: SubjectEntity = mapper.readValue(mockMvc()
                 .perform(MockMvcRequestBuilders.post(path)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(s)))
-                .andReturn().response.contentAsString)
+                                               .contentType(MediaType.APPLICATION_JSON)
+                                               .content(mapper.writeValueAsString(s)))
+                .andReturn()
+                .response
+                .contentAsString)
         assertEquals(s.name, subject.name)
         assertEquals(s.code, subject.code)
         assertEquals(s.description, subject.description)
@@ -49,11 +51,11 @@ class CreateSubjectIT : BaseDataIT() {
     @WithMockKeycloakAuth(ADMIN)
     fun `i cannot create a subject with an invalid teacher`() {
         val s = SubjectSaveDTO("Test", "42", null, null, "invalid")
-        mockMvc()
-                .perform(MockMvcRequestBuilders.post(path)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is4xxClientError)
+        mockMvc().perform(MockMvcRequestBuilders.post(path)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is4xxClientError)
+        assertEquals(0, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 
     @Test
@@ -61,11 +63,11 @@ class CreateSubjectIT : BaseDataIT() {
     fun `i cannot create a subject with invalid tutors`() {
         val listOfTutors = listOf("invalid")
         val s = SubjectSaveDTO("Test", "42", null, null, null, listOfTutors)
-        mockMvc()
-                .perform(MockMvcRequestBuilders.post(path)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is4xxClientError)
+        mockMvc().perform(MockMvcRequestBuilders.post(path)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is4xxClientError)
+        assertEquals(0, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 
     @Test
@@ -73,11 +75,11 @@ class CreateSubjectIT : BaseDataIT() {
     fun `i cannot create a subject with invalid students`() {
         val listOfStudents = listOf("invalid")
         val s = SubjectSaveDTO("Test", "42", null, null, null, null, listOfStudents)
-        mockMvc()
-                .perform(MockMvcRequestBuilders.post(path)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is4xxClientError)
+        mockMvc().perform(MockMvcRequestBuilders.post(path)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is4xxClientError)
+        assertEquals(0, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 
     @Test
@@ -89,9 +91,10 @@ class CreateSubjectIT : BaseDataIT() {
         val listOfStudents = listOf(student)
         val s = SubjectSaveDTO("Test", "42", null, 2, teacher1.username, listOfTutors, listOfStudents)
         mockMvc().perform(MockMvcRequestBuilders.post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is2xxSuccessful)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is2xxSuccessful)
+        assertEquals(1, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 
     @Test
@@ -103,9 +106,10 @@ class CreateSubjectIT : BaseDataIT() {
         val listOfStudents = listOf(student)
         val s = SubjectSaveDTO("Test", "42", "test", null, teacher1.username, listOfTutors, listOfStudents)
         mockMvc().perform(MockMvcRequestBuilders.post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is2xxSuccessful)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is2xxSuccessful)
+        assertEquals(1, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 
     @Test
@@ -117,9 +121,10 @@ class CreateSubjectIT : BaseDataIT() {
         val listOfStudents = listOf(student)
         val s = SubjectSaveDTO("Test", "42", "test", 2, null, listOfTutors, listOfStudents)
         mockMvc().perform(MockMvcRequestBuilders.post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is2xxSuccessful)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is2xxSuccessful)
+        assertEquals(1, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 
     @Test
@@ -129,9 +134,10 @@ class CreateSubjectIT : BaseDataIT() {
         val listOfStudents = listOf(student)
         val s = SubjectSaveDTO("Test", "42", "test", 2, teacher1.username, null, listOfStudents)
         mockMvc().perform(MockMvcRequestBuilders.post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is2xxSuccessful)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is2xxSuccessful)
+        assertEquals(1, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 
     @Test
@@ -141,9 +147,10 @@ class CreateSubjectIT : BaseDataIT() {
         val listOfTutors = listOf(tutor)
         val s = SubjectSaveDTO("Test", "42", "test", 2, teacher1.username, listOfTutors, null)
         mockMvc().perform(MockMvcRequestBuilders.post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is2xxSuccessful)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is2xxSuccessful)
+        assertEquals(1, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 
     @Test
@@ -151,9 +158,10 @@ class CreateSubjectIT : BaseDataIT() {
     fun `i cannot create a subject as teacher`() {
         val s = Subject("Test", "42")
         mockMvc().perform(MockMvcRequestBuilders.post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is4xxClientError)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is4xxClientError)
+        assertEquals(0, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 
     @Test
@@ -161,8 +169,9 @@ class CreateSubjectIT : BaseDataIT() {
     fun `i cannot create a subject as student`() {
         val s = Subject("Test", "42")
         mockMvc().perform(MockMvcRequestBuilders.post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(s)))
-                .andExpect(status().is4xxClientError)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(mapper.writeValueAsString(s)))
+                 .andExpect(status().is4xxClientError)
+        assertEquals(0, subjectRepository.findAllByNameContainingOrCodeContaining("Test", "42").size)
     }
 }

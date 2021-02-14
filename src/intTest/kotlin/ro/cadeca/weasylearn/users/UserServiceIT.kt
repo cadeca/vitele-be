@@ -1,9 +1,16 @@
 package ro.cadeca.weasylearn.users
 
-import org.junit.jupiter.api.Assertions
+import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import ro.cadeca.weasylearn.BaseDataIT
+import ro.cadeca.weasylearn.config.Roles
+import ro.cadeca.weasylearn.controllers.UserController
 import ro.cadeca.weasylearn.model.Student
 import ro.cadeca.weasylearn.model.Teacher
 import ro.cadeca.weasylearn.persistence.user.StudyType.Companion.BACHELOR
@@ -11,6 +18,7 @@ import ro.cadeca.weasylearn.persistence.user.UserDocument
 import ro.cadeca.weasylearn.persistence.user.UserTypes
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
 import ro.cadeca.weasylearn.services.UserService
+import ro.cadeca.weasylearn.student2
 import java.util.*
 
 class UserServiceIT : BaseDataIT() {
@@ -38,18 +46,18 @@ class UserServiceIT : BaseDataIT() {
         userRepository.save(ud)
 
         val theStudent = userService.findUserByUsername(ud.username) as Student
-        Assertions.assertNotNull(theStudent)
-        Assertions.assertEquals(STUDENT_USER_NAME, theStudent.username)
-        Assertions.assertEquals(STUDENT_FIRST_NAME, theStudent.firstName)
-        Assertions.assertEquals(STUDENT_LAST_NAME, theStudent.lastName)
-        Assertions.assertEquals(STUDENT_BIRTH_DATE, theStudent.dateOfBirth)
-        Assertions.assertEquals(STUDENT_EMAIL, theStudent.email)
-        Assertions.assertEquals(STUDENT_STUDY_TYPE, theStudent.studyType)
-        Assertions.assertEquals(STUDENT_YEAR, theStudent.year)
-        Assertions.assertEquals(STUDENT_GROUP, theStudent.group)
-        Assertions.assertEquals(STUDENT_GITHUB_USER, theStudent.githubUser)
-        Assertions.assertEquals(STUDENT_FACEBOOK_USER, theStudent.facebookUser)
-        Assertions.assertEquals(STUDENT_EDU_USER, theStudent.eduUser)
+        assertNotNull(theStudent)
+        assertEquals(STUDENT_USER_NAME, theStudent.username)
+        assertEquals(STUDENT_FIRST_NAME, theStudent.firstName)
+        assertEquals(STUDENT_LAST_NAME, theStudent.lastName)
+        assertEquals(STUDENT_BIRTH_DATE, theStudent.dateOfBirth)
+        assertEquals(STUDENT_EMAIL, theStudent.email)
+        assertEquals(STUDENT_STUDY_TYPE, theStudent.studyType)
+        assertEquals(STUDENT_YEAR, theStudent.year)
+        assertEquals(STUDENT_GROUP, theStudent.group)
+        assertEquals(STUDENT_GITHUB_USER, theStudent.githubUser)
+        assertEquals(STUDENT_FACEBOOK_USER, theStudent.facebookUser)
+        assertEquals(STUDENT_EDU_USER, theStudent.eduUser)
 
         userRepository.delete(ud)
     }
@@ -72,18 +80,32 @@ class UserServiceIT : BaseDataIT() {
         userRepository.save(ud)
 
         val theTeacher = userService.findUserByUsername(ud.username) as Teacher
-        Assertions.assertNotNull(theTeacher)
-        Assertions.assertEquals(TEACHER_USER_NAME, theTeacher.username)
-        Assertions.assertEquals(TEACHER_FIRST_NAME, theTeacher.firstName)
-        Assertions.assertEquals(TEACHER_LAST_NAME, theTeacher.lastName)
-        Assertions.assertEquals(TEACHER_BIRTH_DATE, theTeacher.dateOfBirth)
-        Assertions.assertEquals(TEACHER_EMAIL, theTeacher.email)
-        Assertions.assertEquals(TEACHER_DEPT, theTeacher.department)
-        Assertions.assertEquals(TEACHER_TITLES.toSet(), theTeacher.titles?.toSet())
-        Assertions.assertEquals(TEACHER_EDU_USER, theTeacher.eduUser)
-        Assertions.assertEquals(TEACHER_GITHUB_USER, theTeacher.githubUser)
+        assertNotNull(theTeacher)
+        assertEquals(TEACHER_USER_NAME, theTeacher.username)
+        assertEquals(TEACHER_FIRST_NAME, theTeacher.firstName)
+        assertEquals(TEACHER_LAST_NAME, theTeacher.lastName)
+        assertEquals(TEACHER_BIRTH_DATE, theTeacher.dateOfBirth)
+        assertEquals(TEACHER_EMAIL, theTeacher.email)
+        assertEquals(TEACHER_DEPT, theTeacher.department)
+        assertEquals(TEACHER_TITLES.toSet(), theTeacher.titles?.toSet())
+        assertEquals(TEACHER_EDU_USER, theTeacher.eduUser)
+        assertEquals(TEACHER_GITHUB_USER, theTeacher.githubUser)
 
         userRepository.delete(ud)
+    }
+
+    @Test
+    @WithMockKeycloakAuth(Roles.ADMIN)
+    fun `can change user type`() {
+        val mapper = jacksonObjectMapper()
+        val userType = UserController.UserType(student2.username, Roles.ADMIN)
+        val result = mockMvc().perform(MockMvcRequestBuilders.put("/api/user/type")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("userType", mapper.writeValueAsString(userType)))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andReturn()
+        assertTrue(userService.isType(student2.username, Roles.ADMIN))
+        assertEquals(200, result.response.status, "")
     }
 
     @Test
@@ -99,12 +121,12 @@ class UserServiceIT : BaseDataIT() {
         userRepository.save(ud)
 
         val theOtherUser = userService.findUserByUsername(ud.username)
-        Assertions.assertNotNull(theOtherUser)
-        Assertions.assertEquals(OTHER_USER_USER_NAME, theOtherUser.username)
-        Assertions.assertEquals(OTHER_USER_FIRST_NAME, theOtherUser.firstName)
-        Assertions.assertEquals(OTHER_USER_LAST_NAME, theOtherUser.lastName)
-        Assertions.assertEquals(OTHER_USER_BIRTH_DATE, theOtherUser.dateOfBirth)
-        Assertions.assertEquals(OTHER_USER_EMAIL, theOtherUser.email)
+        assertNotNull(theOtherUser)
+        assertEquals(OTHER_USER_USER_NAME, theOtherUser.username)
+        assertEquals(OTHER_USER_FIRST_NAME, theOtherUser.firstName)
+        assertEquals(OTHER_USER_LAST_NAME, theOtherUser.lastName)
+        assertEquals(OTHER_USER_BIRTH_DATE, theOtherUser.dateOfBirth)
+        assertEquals(OTHER_USER_EMAIL, theOtherUser.email)
 
         userRepository.delete(ud)
     }

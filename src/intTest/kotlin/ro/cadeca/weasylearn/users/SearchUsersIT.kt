@@ -3,8 +3,7 @@ package ro.cadeca.weasylearn.users
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -30,7 +29,7 @@ class SearchUsersIT : BaseDataIT() {
     @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all users`() {
         val allUsers: List<UserWrapperDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/all")).andReturn().response.contentAsString)
-        Assertions.assertNotNull(allUsers)
+        assertNotNull(allUsers)
         assertEquals(6, allUsers.size)
     }
 
@@ -51,7 +50,7 @@ class SearchUsersIT : BaseDataIT() {
     @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all teachers`() {
         val allTeachers: List<TeacherDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/teachers")).andReturn().response.contentAsString)
-        Assertions.assertNotNull(allTeachers)
+        assertNotNull(allTeachers)
         assertEquals(2, allTeachers.size)
     }
 
@@ -59,7 +58,7 @@ class SearchUsersIT : BaseDataIT() {
     @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all students`() {
         val allStudents: List<StudentDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/students")).andReturn().response.contentAsString)
-        Assertions.assertNotNull(allStudents)
+        assertNotNull(allStudents)
         assertEquals(2, allStudents.size)
     }
 
@@ -67,7 +66,7 @@ class SearchUsersIT : BaseDataIT() {
     @WithMockKeycloakAuth(Roles.ADMIN)
     fun `get all otherUsers`() {
         val allOtherUsers: List<UserDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/others")).andReturn().response.contentAsString)
-        Assertions.assertNotNull(allOtherUsers)
+        assertNotNull(allOtherUsers)
         assertEquals(2, allOtherUsers.size)
     }
 
@@ -124,11 +123,11 @@ class SearchUsersIT : BaseDataIT() {
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by username`() {
         val userList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search?query=johnsnow")).andReturn().response.contentAsString)
-        Assertions.assertNotNull(userList)
+        assertNotNull(userList)
         assertEquals(1, userList.size)
         val user = userList.first()
 
-        Assertions.assertNotNull(user)
+        assertNotNull(user)
         assertEquals("JohnSnow", user.username)
         assertEquals("John", user.firstName)
         assertEquals("Snow", user.lastName)
@@ -141,7 +140,7 @@ class SearchUsersIT : BaseDataIT() {
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by firstName`() {
         val userList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search").param("query", "John")).andReturn().response.contentAsString)
-        Assertions.assertNotNull(userList)
+        assertNotNull(userList)
         assertEquals(2, userList.size)
 
         val user1 = userList.first()
@@ -160,7 +159,7 @@ class SearchUsersIT : BaseDataIT() {
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by fullName`() {
         val userList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search?query=John Albert Doe")).andReturn().response.contentAsString)
-        Assertions.assertNotNull(userList)
+        assertNotNull(userList)
         assertEquals(1, userList.size)
 
         val user = userList.first()
@@ -173,7 +172,7 @@ class SearchUsersIT : BaseDataIT() {
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by two firstNames`() {
         val usersList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search?query=John Albert")).andReturn().response.contentAsString)
-        Assertions.assertNotNull(usersList)
+        assertNotNull(usersList)
         assertEquals(1, usersList.size)
 
         val user = usersList.first()
@@ -186,7 +185,7 @@ class SearchUsersIT : BaseDataIT() {
     @WithMockKeycloakAuth(Roles.STUDENT)
     fun `search by email`() {
         val usersList: List<UserSearchDTO> = mapper.readValue(mockMvc().perform(MockMvcRequestBuilders.get("$path/search?query=professor.papel@upt.ro")).andReturn().response.contentAsString)
-        Assertions.assertNotNull(usersList)
+        assertNotNull(usersList)
         assertEquals(1, usersList.size)
 
         val user = usersList.first()
