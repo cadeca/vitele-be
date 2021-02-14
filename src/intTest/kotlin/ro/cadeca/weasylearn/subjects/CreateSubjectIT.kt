@@ -45,8 +45,8 @@ class CreateSubjectIT : BaseDataIT() {
         assertEquals(s.students?.size, subject.students?.size)
     }
 
-     @Test
-  @WithMockKeycloakAuth(ADMIN)
+    @Test
+    @WithMockKeycloakAuth(ADMIN)
     fun `i cannot create a subject with an invalid teacher`() {
         val s = SubjectSaveDTO("Test", "42", null, null, "invalid")
         mockMvc()
