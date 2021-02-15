@@ -1,6 +1,8 @@
 package ro.cadeca.weasylearn.services
 
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import ro.cadeca.weasylearn.annotations.validation.ValidSubject
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.converters.subject.SubjectEntityFromSaveDtoConverter
 import ro.cadeca.weasylearn.converters.subject.SubjectFromEntityConverter
@@ -13,8 +15,10 @@ import ro.cadeca.weasylearn.persistence.subject.SubjectRepository
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.STUDENT
 import ro.cadeca.weasylearn.persistence.user.UserTypes.Companion.TEACHER
 import javax.transaction.Transactional
+import javax.validation.Valid
 
 @Service
+@Validated
 class SubjectService(private val subjectRepository: SubjectRepository,
                      private val userService: UserService,
                      private val subjectFromEntityConverter: SubjectFromEntityConverter,
@@ -28,7 +32,7 @@ class SubjectService(private val subjectRepository: SubjectRepository,
                 .map(subjectFromEntityConverter::convert)
     }
 
-    fun save(subject: SubjectSaveDTO) =
+    fun save(@Valid @ValidSubject subject: SubjectSaveDTO) =
             subject.let(subjectEntityFromSaveDtoConverter::convert)
                     .let(subjectRepository::save)
 

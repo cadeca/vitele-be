@@ -1,6 +1,8 @@
 package ro.cadeca.weasylearn.controllers
 
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import ro.cadeca.weasylearn.annotations.validation.ValidSubject
 import ro.cadeca.weasylearn.config.Roles.Companion.ADMIN
 import ro.cadeca.weasylearn.config.Roles.Companion.STUDENT
 import ro.cadeca.weasylearn.config.Roles.Companion.TEACHER
@@ -10,9 +12,11 @@ import ro.cadeca.weasylearn.dto.subjects.SubjectDTO
 import ro.cadeca.weasylearn.dto.subjects.SubjectSaveDTO
 import ro.cadeca.weasylearn.services.SubjectService
 import javax.annotation.security.RolesAllowed
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("api/subject")
+@Validated
 class SubjectController(
         private val subjectService: SubjectService,
         private val subjectFromDtoConverter: SubjectFromDtoConverter,
@@ -44,7 +48,7 @@ class SubjectController(
 
     @PostMapping
     @RolesAllowed(ADMIN)
-    fun save(@RequestBody subject: SubjectSaveDTO) =
+    fun save(@RequestBody @Valid @ValidSubject subject: SubjectSaveDTO) =
             subjectService.save(subject)
 
     @PutMapping("/{id}/teacher")
